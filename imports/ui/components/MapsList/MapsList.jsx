@@ -42,7 +42,7 @@ class MapsList extends Component {
 
 		return (
 			<div className="home">
-				<h1>Home</h1>
+				<h1>Game Sizes</h1>
 				<div className = "maps">
 					{maps}
 				</div>
