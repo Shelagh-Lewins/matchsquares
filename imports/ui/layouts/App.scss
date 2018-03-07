@@ -1,0 +1,52 @@
+@import '../stylesheets/colors';
+
+header {
+	background: $header-bg;
+	overflow: hidden;
+	padding: 8px 0;
+
+	button {
+		margin: 0 8px;
+	}
+}
+
+.login-buttons-dropdown-align-right {
+	float: right;
+}
+
+.login-link-text {
+	color: $header-color;
+	display: inline-block;
+	line-height: 20px;
+	padding: 6px 12px;
+}
+
+nav {
+	float: left;
+
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+
+		li {
+			display: inline;
+
+			a {
+				color: $header-color;
+				display: inline-block;
+				line-height: 20px;
+				padding: 6px 12px;
+			}
+		}
+	}
+}
+
+.new-map {
+	float: right;
+	margin-bottom: 0;
+}
+
+main {
+	background-color: #bbb;
+}

@@ -1,0 +1,157 @@
+@import '../../stylesheets/colors';
+@import '../../stylesheets/mixins';
+
+// pattern
+.pattern-holder {
+	position: relative;
+	width: 100%;
+}
+
+.pattern {
+	@include horizontal-centerer;
+	clear: both;
+	float: left;
+	margin-bottom: 8px;
+	overflow: hidden;
+	padding: 0;
+}
+
+.patternrow {
+	border-left: 1px solid $ms-border;
+	border-top: 1px solid $ms-border;
+	clear: both;
+	float: left;
+	list-style-type: none;
+	padding: 0;
+
+	&:last-child {
+		border-bottom: 1px solid $ms-border;
+	}
+}
+
+.pattern-square {
+	float: left;
+	font-size: 0;
+
+	&.match {
+		background: $ms-match;
+	}
+
+	&.blue {
+		polygon {
+			fill: $ms-blue;
+		}
+	}
+
+	&.red {
+		polygon {
+			fill: $ms-red;
+		}
+	}
+
+	&.yellow {
+		polygon {
+			fill: $ms-yellow;
+		}
+	}
+
+	&.green {
+		polygon {
+			fill: $ms-green;
+		}
+	}
+
+	span {
+		background: $ms-background;
+		display: inline-block;
+		height: 80px;
+		width: 80px;
+
+		&:last-child {
+			border-right: 1px solid $ms-border;
+		}
+
+		polygon {
+			fill: $ms-blue;
+		}
+	}
+}
+
+// game map
+.map-holder {
+	position: relative;
+	width: 100%;
+}
+
+.game-map {
+	@include horizontal-centerer;
+	background: $map-background;
+	border: 1px solid $ms-border;
+	border-radius: 2px;
+	clear: both;
+	float: left;
+	margin-bottom: 8px;
+	overflow: hidden;
+	padding: 2px;
+}
+
+.maprow {
+	clear: both;
+	float: left;
+	font-size: 0;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.map-square {
+	display: inline-block;
+	font-size: 0;
+	position: relative;
+
+	&.blue {
+		polygon {
+			fill: $ms-blue;
+		}
+	}
+
+	&.red {
+		polygon {
+			fill: $ms-red;
+		}
+	}
+
+	&.yellow {
+		polygon {
+			fill: $ms-yellow;
+		}
+	}
+
+	&.green {
+		polygon {
+			fill: $ms-green;
+		}
+	}
+
+	span {
+		background: $ms-background;
+		border: 1px solid $ms-border;
+		border-radius: 2px;
+		display: inline-block;
+		position: relative;
+		top: 0;
+	}
+
+	&.match {
+		span {
+			background: $ms-match;
+		}
+	}
+
+	&.sliding {
+		span {
+			// transition: top 500ms cubic-bezier(.33, 0, .66, .33);
+		}
+	}
+}
+

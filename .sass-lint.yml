@@ -1,0 +1,8 @@
+rules:
+  indentation:
+    - 2
+    -
+      size: tab
+  nesting-depth:
+    - 1
+    - max-depth: 3
