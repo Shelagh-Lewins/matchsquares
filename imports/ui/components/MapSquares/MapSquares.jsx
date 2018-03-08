@@ -82,6 +82,7 @@ class MapSquares extends Component {
 			'isGenerator': mapSize.isGenerator,
 			'randomMoves': 0,
 			'mapSquares': [[]],
+			'pattern': [[]],
 			'checkMatch': false,
 			'match': {},
 			'acceptInput': false,
@@ -112,7 +113,7 @@ class MapSquares extends Component {
 
 	generatePattern() {
 		// generate a new pattern
-		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+		/* const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 		let pattern = [];
 
 		for (let i = 0; i < this.state.patternRows; i++) {
@@ -129,14 +130,62 @@ class MapSquares extends Component {
 			}
 
 			pattern.push(row);
+		} */
+		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+		let pattern = [];
+
+		for (let i = 0; i < this.state.patternRows; i++) {
+			let row = [];
+
+			for (let j = 0; j < this.state.patternColumns; j++) {
+				let square = {
+					'color': colors[0],
+					'row': i,
+					'column': j,
+				};
+
+				row.push(square);
+			}
+
+			pattern.push(row);
 		}
 
-		this.setState( {
+		const generatorSteps = Meteor.settings.public.generatorSteps[this.state.mapColumns];
+
+		promisedCall('game.randomMove', {
+			'mapSquares': pattern,
+			'number': generatorSteps,
+			'mapRows': this.state.mapRows,
+			'mapColumns': this.state.mapColumns,
+			'patternRows': this.state.patternRows,
+			'patternColumns': this.state.patternColumns,
+		}).then((data) => {
+			this.setState( {
+				'pattern': data,
+				'match': {},
+				'checkMatch': true,
+				'acceptInput': true,
+			} );
+
+			/*
+			const randomMoves = this.state.randomMoves + 1;
+
+			this.setState({
+				'generator': data,
+				'randomMoves': randomMoves,
+			}); */
+		},
+		(err) => {
+			toastr.error(`Error performing random move: ${err}`);
+		}
+		);
+
+		/* this.setState( {
 			'pattern': pattern,
 			'match': {},
 			'checkMatch': true,
 			'acceptInput': true,
-		} );
+		} ); */
 	}
 
 	generateMap() {
@@ -456,7 +505,7 @@ class MapSquares extends Component {
 	randomMoveClicked(event, number) {
 		const myInt = parseInt(number, 10);
 		promisedCall('game.randomMove', {
-			'generatorSquares': this.state.generator,
+			'mapSquares': this.state.generator,
 			'number': myInt,
 			'mapRows': this.state.mapRows,
 			'mapColumns': this.state.mapColumns,
@@ -464,7 +513,7 @@ class MapSquares extends Component {
 			'patternColumns': this.state.patternColumns,
 		}).then((data) => {
 			const randomMoves = this.state.randomMoves + 1;
-			// console.log(`returned data ${JSON.stringify(data)}`);
+
 			this.setState({
 				'generator': data,
 				'randomMoves': randomMoves,

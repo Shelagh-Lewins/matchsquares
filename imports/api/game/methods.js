@@ -6,9 +6,8 @@ import rateLimit from '../../modules/rate-limit';
 
 Meteor.methods({
 	'game.randomMove': function RandomMove(params) {
-
 		check(params, {
-			'generatorSquares': [[Object]],
+			'mapSquares': [[Object]],
 			'number': Match.Maybe(Number), // eslint-disable-line new-cap
 			'mapRows': Number,
 			'mapColumns': Number,
@@ -16,23 +15,22 @@ Meteor.methods({
 			'patternColumns': Number,
 		});
 
-		// let data = params.generatorSquares;
+		let data = params.mapSquares;
 
-		const row = Math.floor(Random.fraction() * params.mapRows);
-		console.log(`random row ${row}`);
-		const column = Math.floor(Random.fraction() * params.mapColumns);
-		console.log(`random column ${column}`);
+		for (let i = 0; i < params.number; i++ ) {
+			const row = Math.floor(Random.fraction() * params.mapRows);
+			const column = Math.floor(Random.fraction() * params.mapColumns);
 
-		// return params.generatorSquares;
+			data = Meteor.call('game.mapSquareClicked', {
+				'mapSquares': data,
+				'row': row,
+				'column': column,
+				'mapRows': params.mapRows,
+				'mapColumns': params.mapColumns,
+			});
+		}
 
-		return Meteor.call('game.mapSquareClicked', {
-			'mapSquares': params.generatorSquares,
-			'row': row,
-			'column': column,
-			'mapRows': params.mapRows,
-			'mapColumns': params.mapColumns,
-			'generatorSquares': params.generatorSquares,
-		});
+		return data;
 	},
 	'game.mapSquareClicked': function MapSquareClicked(params) {
 		// check adjacent squares
@@ -93,7 +91,7 @@ Meteor.methods({
 
 		return Meteor.call('game.setMapSquareColor', {
 			'squares': affectedSquares,
-			'generatorSquares': params.generatorSquares,
+			'mapSquares': params.mapSquares,
 		});
 	},
 	'game.setMapSquareColor': function SetMapSquareColor(params) {
@@ -111,7 +109,7 @@ Meteor.methods({
 			squares = params.squares;
 		}
 
-		let mapSquares = params.generatorSquares;
+		let mapSquares = params.mapSquares;
 
 		squares.map((square) => {
 			let newColor = square.color;
