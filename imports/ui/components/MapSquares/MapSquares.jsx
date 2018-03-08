@@ -53,45 +53,22 @@ function GeneratorSquare(props) {
 	);
 }
 
-class RandomMove extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {'number': 1};
-		console.log(`props ${JSON.stringify(props)}`);
-
-		this.handleChange = this.handleChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-
-	handleChange(event) {
-		this.setState({'number': event.target.value});
-	}
-
-	handleSubmit(event) {
+function RandomMove(props) {
+	function handleSubmit(event) {
 		event.preventDefault();
 
-		promisedCall('game.randomMove', {'generatorSquares': this.props.generatorSquares, 'number': this.state.number}).then((data) => {
-			// this.setState({'name': ''});
-			console.log(`got result ${data}`);
-		},
-		(err) => {
-			toastr.error(`Error performing random move: ${err}`);
-		}
-		);
+		props.randomMoveClicked(event, event.target.numberOfMoves.value);
 	}
 
-	render() {
-		return (
-			<form className="random-move form-group" onSubmit={this.handleSubmit}>
-				<label>
-					<input type="number" className="form-control" placeholder="Number of moves" value={this.state.number} onChange={this.handleChange} />
-				</label>
-				<Button type="submit"  className="btn btn-secondary" >Random Move</Button>
-			</form>
-		);
-	}
+	return (
+		<form className="random-move form-group" onSubmit={handleSubmit.bind(this)}>
+			<label>
+				<input type="number" name="numberOfMoves" className="form-control" placeholder="Number of moves" defaultValue={1} />
+			</label>
+			<Button type="submit" className="btn btn-secondary" >Random Move</Button>
+		</form>
+	);
 }
-
 
 class MapSquares extends Component {
 	constructor(props) {
@@ -103,6 +80,7 @@ class MapSquares extends Component {
 
 		this.state = {
 			'isGenerator': mapSize.isGenerator,
+			'randomMoves': 0,
 			'mapSquares': [[]],
 			'checkMatch': false,
 			'match': {},
@@ -409,7 +387,7 @@ class MapSquares extends Component {
 			if (typeof newColor === 'undefined') {
 				// if no color specified, choose the next color along
 				const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
-				const currentColor = this.state.mapSquares[square.row][square.column].color;
+				const currentColor = mapSquares[square.row][square.column].color;
 				const colorIndex = (colors.indexOf(currentColor) + 1) % colors.length;
 				newColor = colors[colorIndex];
 			}
@@ -475,6 +453,29 @@ class MapSquares extends Component {
 		);
 	}
 
+	randomMoveClicked(event, number) {
+		const myInt = parseInt(number, 10);
+		promisedCall('game.randomMove', {
+			'generatorSquares': this.state.generator,
+			'number': myInt,
+			'mapRows': this.state.mapRows,
+			'mapColumns': this.state.mapColumns,
+			'patternRows': this.state.patternRows,
+			'patternColumns': this.state.patternColumns,
+		}).then((data) => {
+			const randomMoves = this.state.randomMoves + 1;
+			// console.log(`returned data ${JSON.stringify(data)}`);
+			this.setState({
+				'generator': data,
+				'randomMoves': randomMoves,
+			});
+		},
+		(err) => {
+			toastr.error(`Error performing random move: ${err}`);
+		}
+		);
+	}
+
 	renderGeneratorRow(generatorrow, index) {
 		return (
 			<ul className='patternrow' key={`patternrow ${index}`}>
@@ -532,7 +533,7 @@ class MapSquares extends Component {
 					{generator.map( (generatorrow, index) => this.renderGeneratorRow(generatorrow, index))}
 				</ul>
 				<RandomMove
-					generatorSquares={this.state.generator}
+					randomMoveClicked={this.randomMoveClicked.bind(this)}
 				/>
 			</div>
 		);
