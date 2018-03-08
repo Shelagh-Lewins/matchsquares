@@ -5,24 +5,45 @@ import { check, Match, Maybe } from 'meteor/check'; // eslint-disable-line no-un
 import rateLimit from '../../modules/rate-limit';
 
 Meteor.methods({
-	'game.randomMove': function RandomMove(params) {
+	'game.generatePattern': function RandomMove(params) {
 		check(params, {
-			'mapSquares': [[Object]],
-			'number': Match.Maybe(Number), // eslint-disable-line new-cap
+			// 'mapSquares': [[Object]],
 			'mapRows': Number,
 			'mapColumns': Number,
 			'patternRows': Number,
 			'patternColumns': Number,
 		});
 
-		let data = params.mapSquares;
+		// start with a solid blue ground
+		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+		let mapSquares = [];
 
-		for (let i = 0; i < params.number; i++ ) {
+		for (let i = 0; i < params.patternRows; i++) {
+			let row = [];
+
+			for (let j = 0; j < params.patternColumns; j++) {
+				let square = {
+					'color': colors[0],
+					'row': i,
+					'column': j,
+				};
+
+				row.push(square);
+			}
+
+			mapSquares.push(row);
+		}
+
+		// make random steps
+		// let data = params.mapSquares;
+		const generatorSteps = Meteor.settings.private.generatorSteps[params.mapColumns];
+
+		for (let i = 0; i < generatorSteps; i++ ) {
 			const row = Math.floor(Random.fraction() * params.mapRows);
 			const column = Math.floor(Random.fraction() * params.mapColumns);
 
-			data = Meteor.call('game.mapSquareClicked', {
-				'mapSquares': data,
+			mapSquares = Meteor.call('game.mapSquareClicked', {
+				'mapSquares': mapSquares,
 				'row': row,
 				'column': column,
 				'mapRows': params.mapRows,
@@ -30,7 +51,7 @@ Meteor.methods({
 			});
 		}
 
-		return data;
+		return mapSquares;
 	},
 	'game.mapSquareClicked': function MapSquareClicked(params) {
 		// check adjacent squares

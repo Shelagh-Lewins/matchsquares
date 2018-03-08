@@ -121,24 +121,6 @@ class MapSquares extends Component {
 
 			for (let j = 0; j < this.state.patternColumns; j++) {
 				let square = {
-					'color': Random.choice(colors),
-					'row': i,
-					'column': j,
-				};
-
-				row.push(square);
-			}
-
-			pattern.push(row);
-		} */
-		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
-		let pattern = [];
-
-		for (let i = 0; i < this.state.patternRows; i++) {
-			let row = [];
-
-			for (let j = 0; j < this.state.patternColumns; j++) {
-				let square = {
 					'color': colors[0],
 					'row': i,
 					'column': j,
@@ -148,13 +130,10 @@ class MapSquares extends Component {
 			}
 
 			pattern.push(row);
-		}
+		} */
 
-		const generatorSteps = Meteor.settings.public.generatorSteps[this.state.mapColumns];
-
-		promisedCall('game.randomMove', {
-			'mapSquares': pattern,
-			'number': generatorSteps,
+		promisedCall('game.generatePattern', {
+			// 'mapSquares': pattern,
 			'mapRows': this.state.mapRows,
 			'mapColumns': this.state.mapColumns,
 			'patternRows': this.state.patternRows,
