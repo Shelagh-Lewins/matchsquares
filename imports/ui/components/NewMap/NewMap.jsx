@@ -63,7 +63,7 @@ class NewMap extends Component {
 		return (
 			<form className="new-map form-group" onSubmit={this.handleSubmit}>
 				<label>
-					<input type="text" className="form=control" disabled={inputDisabled} placeholder="Map name" value={this.state.name} onChange={this.handleChange} />
+					<input type="text" className="form-control" disabled={inputDisabled} placeholder="Map name" value={this.state.name} onChange={this.handleChange} />
 				</label>
 				<Button type="submit" disabled={submitDisabled} className="btn btn-secondary" >New map</Button>
 				{/* <button onClick={ swarm } >Test rate limiter</button> */}

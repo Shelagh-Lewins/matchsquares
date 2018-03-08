@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
 import './MapSquares.scss';
 import { Random } from 'meteor/random';
 import { Meteor } from 'meteor/meteor';
 
+import promisedCall from '../../../api/client/promised-call.js';
+
 // notifications
 import toastr from 'toastr';
 import 'toastr/build/toastr.css';
+
+function PatternSquare(props) {
+	return (
+		<li className={`pattern-square ${props.color} ${props.match}`}><span key={props.index}><svg viewBox="0 0 100 100">
+			<polygon points={props.points} /></svg></span></li>
+	);
+}
 
 function MapSquare(props) {
 	function handleClick(event) {
@@ -36,12 +46,52 @@ function MapSquare(props) {
 	);
 }
 
-function PatternSquare(props) {
+function GeneratorSquare(props) {
 	return (
 		<li className={`pattern-square ${props.color} ${props.match}`}><span key={props.index}><svg viewBox="0 0 100 100">
 			<polygon points={props.points} /></svg></span></li>
 	);
 }
+
+class RandomMove extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {'number': 1};
+		console.log(`props ${JSON.stringify(props)}`);
+
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleChange(event) {
+		this.setState({'number': event.target.value});
+	}
+
+	handleSubmit(event) {
+		event.preventDefault();
+
+		promisedCall('game.randomMove', {'generatorSquares': this.props.generatorSquares, 'number': this.state.number}).then((data) => {
+			// this.setState({'name': ''});
+			console.log(`got result ${data}`);
+		},
+		(err) => {
+			toastr.error(`Error performing random move: ${err}`);
+		}
+		);
+	}
+
+	render() {
+		return (
+			<form className="random-move form-group" onSubmit={this.handleSubmit}>
+				<label>
+					<input type="number" className="form-control" placeholder="Number of moves" value={this.state.number} onChange={this.handleChange} />
+				</label>
+				<Button type="submit"  className="btn btn-secondary" >Random Move</Button>
+			</form>
+		);
+	}
+}
+
 
 class MapSquares extends Component {
 	constructor(props) {
@@ -52,10 +102,11 @@ class MapSquares extends Component {
 		);
 
 		this.state = {
+			'isGenerator': mapSize.isGenerator,
 			'mapSquares': [[]],
 			'checkMatch': false,
 			'match': {},
-			'acceptInput': true,
+			'acceptInput': false,
 			'slidingSquares': [],
 			'slideDistance': 0,
 			'slideTransition': '',
@@ -69,7 +120,12 @@ class MapSquares extends Component {
 	componentWillMount() {
 		// do some stuff before component mounts
 		this.generateMap();
-		this.generatePattern();
+
+		if (this.state.isGenerator) {
+			this.generateGenerator(); // test for generating patterns
+		} else {
+			this.generatePattern(); // playable
+		}
 	}
 
 	componentDidMount() {
@@ -122,8 +178,35 @@ class MapSquares extends Component {
 
 		this.setState({
 			'mapSquares': data,
-			'checkMatch': true,
 		});
+	}
+
+	generateGenerator() {
+		// generate a pattern by random moves from a uniform color map
+		// this can definitely be solved
+
+		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+		let generator = [];
+
+		for (let i = 0; i < this.state.patternRows; i++) {
+			let row = [];
+
+			for (let j = 0; j < this.state.patternColumns; j++) {
+				let square = {
+					'color': colors[0],
+					'row': i,
+					'column': j,
+				};
+
+				row.push(square);
+			}
+
+			generator.push(row);
+		}
+
+		this.setState( {
+			'generator': generator,
+		} );
 	}
 
 	findMatch() {
@@ -336,33 +419,6 @@ class MapSquares extends Component {
 		this.setState({'mapSquares': mapSquares});
 	}
 
-	renderMapRow(maprow, index) {
-		return (
-			<ul className='maprow' key={`maprow ${index}`}>
-				{
-					maprow.map( (mapSquare) => {
-						const shape = Meteor.settings.public.mapSquareShapes.find((obj) => obj.color === mapSquare.color );
-
-						return (
-							<MapSquare
-								key={`mapSquare_${mapSquare.row}_${mapSquare.column}`}
-								index={`mapSquare_${mapSquare.row}_${mapSquare.column}`}
-								row={mapSquare.row}
-								column={mapSquare.column}
-								color={mapSquare.color}
-								match={mapSquare.match}
-								sliding={mapSquare.sliding}
-								slideDistance={mapSquare.slideDistance}
-								slideTransition={mapSquare.slideTransition}
-								points={shape.points}
-								mapSquareClicked={this.mapSquareClicked.bind(this)}
-							/>);
-					})
-				}
-			</ul>
-		);
-	}
-
 	renderPatternRow(patternrow, index) {
 		return (
 			<ul className='patternrow' key={`patternrow ${index}`}>
@@ -392,19 +448,93 @@ class MapSquares extends Component {
 		);
 	}
 
-	renderMap(mapSquares) {
+	renderMapRow(maprow, index) {
 		return (
-			<ul className='game-map'>
-				{mapSquares.map( (maprow, index) => this.renderMapRow(maprow, index))}
+			<ul className='maprow' key={`maprow ${index}`}>
+				{
+					maprow.map( (mapSquare) => {
+						const shape = Meteor.settings.public.mapSquareShapes.find((obj) => obj.color === mapSquare.color );
+
+						return (
+							<MapSquare
+								key={`mapSquare_${mapSquare.row}_${mapSquare.column}`}
+								index={`mapSquare_${mapSquare.row}_${mapSquare.column}`}
+								row={mapSquare.row}
+								column={mapSquare.column}
+								color={mapSquare.color}
+								match={mapSquare.match}
+								sliding={mapSquare.sliding}
+								slideDistance={mapSquare.slideDistance}
+								slideTransition={mapSquare.slideTransition}
+								points={shape.points}
+								mapSquareClicked={this.mapSquareClicked.bind(this)}
+							/>);
+					})
+				}
 			</ul>
 		);
 	}
 
-	renderPattern(mapSquares) {
+	renderGeneratorRow(generatorrow, index) {
 		return (
-			<ul className='pattern'>
-				{mapSquares.map( (patternrow, index) => this.renderPatternRow(patternrow, index))}
+			<ul className='patternrow' key={`patternrow ${index}`}>
+				{
+					generatorrow.map( (patternsquare) => {
+						const shape = Meteor.settings.public.mapSquareShapes.find((obj) => obj.color === patternsquare.color );
+
+						let match = '';
+						if (this.state.match.row) {
+							match = 'match';
+						}
+
+						return (
+							<GeneratorSquare
+								key={`patternsquare_${patternsquare.row}_${patternsquare.column}`}
+								index={`patternsquare_${patternsquare.row}_${patternsquare.column}`}
+								row={patternsquare.row}
+								column={patternsquare.column}
+								color={patternsquare.color}
+								match={match}
+								points={shape.points}
+								findMatch={this.findMatch.bind(this)}
+							/>);
+					})
+				}
 			</ul>
+		);
+	}
+
+	renderPattern(pattern) {
+		return (
+			<div className="pattern-holder">
+				<ul className='pattern'>
+					{pattern.map( (patternrow, index) => this.renderPatternRow(patternrow, index))}
+				</ul>
+			</div>
+		);
+	}
+
+	renderMap(mapSquares) {
+		return (
+			<div className="map-holder">
+				<ul className='game-map'>
+					{mapSquares.map( (maprow, index) => this.renderMapRow(maprow, index))}
+				</ul>
+			</div>
+		);
+	}
+
+	renderGenerator(generator) {
+		return (
+			<div className="generator-holder">
+				<h2>Generator</h2>
+				<ul className='generator'>
+					{generator.map( (generatorrow, index) => this.renderGeneratorRow(generatorrow, index))}
+				</ul>
+				<RandomMove
+					generatorSquares={this.state.generator}
+				/>
+			</div>
 		);
 	}
 
@@ -472,21 +602,21 @@ class MapSquares extends Component {
 			mapSquaresArray.push(row);
 		}
 
-		// }
-
+		let pattern = '';
 		const mapSquares = this.renderMap(mapSquaresArray);
+		let Generator = '';
 
-		// show pattern
-		const pattern = this.renderPattern(this.state.pattern);
+		if (this.state.isGenerator) {
+			Generator = this.renderGenerator(this.state.generator);
+		} else {
+			pattern = this.renderPattern(this.state.pattern);
+		}
 
 		return (
 			<div>
-				<div className="pattern-holder">
-					{pattern}
-				</div>
-				<div className="map-holder">
-					{mapSquares}
-				</div>
+				{pattern}
+				{mapSquares}
+				{Generator}
 			</div>
 		);
 	}
