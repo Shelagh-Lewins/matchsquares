@@ -42,7 +42,7 @@ class App extends Component {
 				</header>
 
 				<main>
-					<Grid>
+					<Grid fluid={true}>
 						<Switch>
 							<Route exact path='/' component={Home}/>
 							<Route path='/game/:url' component={Game}/>

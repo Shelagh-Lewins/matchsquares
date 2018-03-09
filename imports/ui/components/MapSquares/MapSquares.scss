@@ -33,10 +33,6 @@
 	float: left;
 	font-size: 0;
 
-	&.match {
-		background: $ms-match;
-	}
-
 	&.blue {
 		polygon {
 			fill: $ms-blue;
@@ -62,10 +58,10 @@
 	}
 
 	span {
-		background: $ms-background;
+		background-color: $ms-background;
 		display: inline-block;
-		height: 80px;
-		width: 80px;
+		height: 70px;
+		width: 70px;
 
 		&:last-child {
 			border-right: 1px solid $ms-border;
@@ -73,6 +69,12 @@
 
 		polygon {
 			fill: $ms-blue;
+		}
+	}
+
+	&.match {
+		span {
+			background-color: $ms-match-3;
 		}
 	}
 }
@@ -135,8 +137,9 @@
 
 	span {
 		background: $ms-background;
+		@include ms-gradient($ms-default-1, $ms-default-2, $ms-default-3, $ms-default-4, $ms-default-5);
 		border: 1px solid $ms-border;
-		border-radius: 2px;
+		border-radius: 4px;
 		display: inline-block;
 		position: relative;
 		top: 0;
@@ -144,19 +147,9 @@
 
 	&.match {
 		span {
-			background: $ms-match;
-		}
-	}
-
-	&.sliding {
-		span {
-			// transition: top 500ms cubic-bezier(.33, 0, .66, .33);
+			@include ms-gradient($ms-match-1, $ms-match-2, $ms-match-3, $ms-match-4, $ms-match-5);
 		}
 	}
 }
 
-// pattern generator
-.generator-holder {
-	clear: both;
-}
 

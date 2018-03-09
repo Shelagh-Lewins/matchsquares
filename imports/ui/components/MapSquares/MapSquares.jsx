@@ -335,7 +335,7 @@ class MapSquares extends Component {
 						const shape = Meteor.settings.public.mapSquareShapes.find((obj) => obj.color === patternsquare.color );
 
 						let match = '';
-						if (this.state.match.row) {
+						if (typeof this.state.match.row !== 'undefined') {
 							match = 'match';
 						}
 

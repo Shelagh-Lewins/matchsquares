@@ -1,5 +1,9 @@
 @import '../stylesheets/colors';
 
+body {
+	background: $body-bg;
+}
+
 header {
 	background: $header-bg;
 	overflow: hidden;
@@ -42,8 +46,4 @@ nav {
 .new-map {
 	float: right;
 	margin-bottom: 0;
-}
-
-main {
-	background-color: #bbb;
 }

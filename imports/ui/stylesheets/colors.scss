@@ -1,3 +1,6 @@
+// app
+$body-bg: #ddd;
+
 // main table-layout
 $header-bg: #7580ac;
 $header-color: #fff;
@@ -9,9 +12,22 @@ $ms-yellow: #ffcf50;
 $ms-red: #da5847;
 
 // mapsquare border:
-$ms-border: #666;
-$map-background: #ddd;
+$ms-border: #0a5472;
+$map-background: #fff;
+$map-border: #666;
 $ms-background: #fff;
-$ms-match: #ffccff;
 
+// gradients
+// mapsquare
+$ms-default-1: #bde8f9;
+$ms-default-2: #ccecfa;
+$ms-default-3: #daf0fa;
+$ms-default-4: #e7f4fa;
+$ms-default-5: #f4f8fa;
 
+// match
+$ms-match-1: #db9cfa;
+$ms-match-2: #e4b4fb;
+$ms-match-3: #eccbfc;
+$ms-match-4: #f4e2fc;
+$ms-match-5: #fbf9fc;
