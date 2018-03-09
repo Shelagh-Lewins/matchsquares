@@ -66,6 +66,9 @@ class MapSquares extends Component {
 			'mapColumns': mapSize.mapColumns,
 			'patternRows': mapSize.patternRows,
 			'patternColumns': mapSize.patternColumns,
+			'clicks': 0,
+			'solved': 0,
+			'clickHistory': [],
 		};
 	}
 
@@ -91,6 +94,7 @@ class MapSquares extends Component {
 				'match': {},
 				'checkMatch': true,
 				'acceptInput': true,
+				'clicks': 0,
 			} );
 		},
 		(err) => {
@@ -162,10 +166,20 @@ class MapSquares extends Component {
 		}
 
 		if (this.state.match.row !== match.row && this.state.match.column !== match.column) {
+			const clickHistory = this.state.clickHistory;
+
+			if (clickHistory.length > Meteor.settings.public.clickHistoryLength) {
+				clickHistory.shift(); // track the last 10 patterns
+			}
+			clickHistory.push(this.state.clicks);
+
 			this.setState( {
 				'checkMatch': false,
 				'match': match,
 				'acceptInput': false,
+				'clicks': 0,
+				'solved': this.state.solved + 1,
+				'clickHistory': clickHistory,
 			});
 
 			setTimeout(() => {
@@ -286,6 +300,9 @@ class MapSquares extends Component {
 			}
 		}
 
+		this.setState({
+			'clicks': this.state.clicks + 1,
+		});
 		this.setMapSquareColor({'squares': affectedSquares});
 		this.findMatch();
 	}
@@ -325,6 +342,13 @@ class MapSquares extends Component {
 		});
 
 		this.setState({'mapSquares': mapSquares});
+	}
+
+	calculateAverage(clickHistory) {
+		if (clickHistory.length < 1) return '-';
+		const averageClicks = clickHistory.reduce((a, b) =>a + b) / clickHistory.length;
+
+		return Math.round(averageClicks * 100) / 100;
 	}
 
 	renderPatternRow(patternrow, index) {
@@ -403,6 +427,24 @@ class MapSquares extends Component {
 		);
 	}
 
+	renderGameStatus(params) {
+		return (
+			<div className='game-status'>
+				<div className='centerer'>
+					<span className='clicks'>
+						Solved: {params.solved}
+					</span>
+					<span className='clicks'>
+						Clicks: {params.clicks}
+					</span>
+					<span className='clicks'>
+						Average clicks: {params.averageClicks}
+					</span>
+				</div>
+			</div>
+		);
+	}
+
 	render() {
 		if (this.props.loading) return <div></div>;
 
@@ -467,9 +509,15 @@ class MapSquares extends Component {
 
 		const mapSquares = this.renderMap(mapSquaresArray);
 		const pattern = this.renderPattern(this.state.pattern);
+		const gameStatus = this.renderGameStatus({
+			'clicks': this.state.clicks,
+			'solved': this.state.solved,
+			'averageClicks': this.calculateAverage(this.state.clickHistory),
+		});
 
 		return (
 			<div>
+				{gameStatus}
 				{pattern}
 				{mapSquares}
 			</div>

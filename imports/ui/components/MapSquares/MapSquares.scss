@@ -152,4 +152,17 @@
 	}
 }
 
+.game-status {
+	position: relative;
+
+	.centerer {
+		@include horizontal-centerer;
+		float: left;
+	}
+
+	span {
+		margin: 0 10px;
+	}
+}
+
 
