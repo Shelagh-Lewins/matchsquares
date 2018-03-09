@@ -162,21 +162,18 @@ class MapSquares extends Component {
 		}
 
 		if (this.state.match.row !== match.row && this.state.match.column !== match.column) {
-			let that = this;
-			setTimeout(() => {
-				that.setState( {
-					'checkMatch': false,
-					'match': match,
-					'acceptInput': false,
-				} );
+			this.setState( {
+				'checkMatch': false,
+				'match': match,
+				'acceptInput': false,
+			});
 
+			setTimeout(() => {
+				this.removeMatchSquares();
 				setTimeout(() => {
-					this.removeMatchSquares();
-					setTimeout(() => {
-						that.generatePattern();
-					}, Meteor.settings.public.slideSquaresTime);
-				}, Meteor.settings.public.showMatchTime + Meteor.settings.public.slideSquaresTime);
-			}, 10);
+					this.generatePattern();
+				}, Meteor.settings.public.slideSquaresTime);
+			}, Meteor.settings.public.showMatchTime + Meteor.settings.public.slideSquaresTime);
 		}
 	}
 
@@ -290,6 +287,7 @@ class MapSquares extends Component {
 		}
 
 		this.setMapSquareColor({'squares': affectedSquares});
+		this.findMatch();
 	}
 
 	setMapSquareColor(params) {
@@ -407,8 +405,6 @@ class MapSquares extends Component {
 
 	render() {
 		if (this.props.loading) return <div></div>;
-
-		this.findMatch();
 
 		// convert nested objects to nested arrays
 		let mapSquaresArray = [];
