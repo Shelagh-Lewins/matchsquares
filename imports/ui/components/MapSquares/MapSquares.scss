@@ -89,12 +89,12 @@
 	@include horizontal-centerer;
 	background: $map-background;
 	border: 1px solid $ms-border;
-	border-radius: 2px;
+	border-radius: 12px;
 	clear: both;
 	float: left;
 	margin-bottom: 8px;
 	overflow: hidden;
-	padding: 2px;
+	padding: 4px;
 }
 
 .maprow {
@@ -139,7 +139,7 @@
 		background: $ms-background;
 		@include ms-gradient($ms-default-1, $ms-default-2, $ms-default-3, $ms-default-4, $ms-default-5);
 		border: 1px solid $ms-border;
-		border-radius: 4px;
+		border-radius: 12px;
 		display: inline-block;
 		position: relative;
 		top: 0;
