@@ -13,58 +13,77 @@ Meteor.methods({
 			'patternColumns': Number,
 		});
 
-		// start with a solid ground the size of the MAP
-		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
-		const colorNumber = Math.floor(Random.fraction() * colors.length);
-
-		let mapSquares = [];
-
-		for (let i = 0; i < params.mapRows; i++) {
-			let row = [];
-
-			for (let j = 0; j < params.mapColumns; j++) {
-				let square = {
-					'color': colors[colorNumber],
-					'row': i,
-					'column': j,
-				};
-
-				row.push(square);
-			}
-
-			mapSquares.push(row);
-		}
-
-		// make random moves from the base MAP. This ensures the pattern can be solved.
-		const generatorSteps = Meteor.settings.private.generatorSteps[params.mapColumns];
-
-		for (let i = 0; i < generatorSteps; i++ ) {
-			const row = Math.floor(Random.fraction() * params.mapRows);
-			const column = Math.floor(Random.fraction() * params.mapColumns);
-
-			mapSquares = Meteor.call('game.mapSquareClicked', {
-				'mapSquares': mapSquares,
-				'row': row,
-				'column': column,
-				'mapRows': params.mapRows,
-				'mapColumns': params.mapColumns,
-			});
-		}
-
-		const startRow = Math.floor(Random.fraction() * (params.mapRows - params.patternRows));
-		const endRow = startRow + params.patternRows;
-
-		const startColumn = Math.floor(Random.fraction() * (params.mapColumns - params.patternColumns));
-		const endColumn = startColumn + params.patternColumns;
-
-		// select an area the size of the PATTERN
 		let pattern = [];
-		for (let i = startRow; i < endRow; i++) {
-			let row = [];
-			for (let j = startColumn; j < endColumn; j++) {
-				row.push(mapSquares[i][j]);
+
+		if (params.mapRows > params.patternRows || params.mapColumns > params.patternColumns) {
+			// the map is wider than the pattern, so any pattern is solvable.
+			const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+
+			for (let i = 0; i < params.patternRows; i++) {
+				pattern[i] = [];
+
+				for (let j = 0; j < params.patternColumns; j++) {
+					pattern[i][j] = {
+						'color': Random.choice(colors),
+						'row': i,
+						'column': j,
+					};
+				}
 			}
-			pattern.push(row);
+		} else {
+			// the pattern is the same size as the map, so must ensure pattern is solvable
+			// start with a solid ground the size of the MAP
+			const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+			const colorNumber = Math.floor(Random.fraction() * colors.length);
+
+			let mapSquares = [];
+
+			for (let i = 0; i < params.mapRows; i++) {
+				let row = [];
+
+				for (let j = 0; j < params.mapColumns; j++) {
+					let square = {
+						'color': colors[colorNumber],
+						'row': i,
+						'column': j,
+					};
+
+					row.push(square);
+				}
+
+				mapSquares.push(row);
+			}
+
+			// make random moves from the base MAP. This ensures the pattern can be solved.
+			const generatorSteps = Meteor.settings.private.generatorSteps[params.mapColumns];
+
+			for (let i = 0; i < generatorSteps; i++ ) {
+				const row = Math.floor(Random.fraction() * params.mapRows);
+				const column = Math.floor(Random.fraction() * params.mapColumns);
+
+				mapSquares = Meteor.call('game.mapSquareClicked', {
+					'mapSquares': mapSquares,
+					'row': row,
+					'column': column,
+					'mapRows': params.mapRows,
+					'mapColumns': params.mapColumns,
+				});
+			}
+
+			const startRow = Math.floor(Random.fraction() * (params.mapRows - params.patternRows));
+			const endRow = startRow + params.patternRows;
+
+			const startColumn = Math.floor(Random.fraction() * (params.mapColumns - params.patternColumns));
+			const endColumn = startColumn + params.patternColumns;
+
+			// select an area the size of the PATTERN
+			for (let i = startRow; i < endRow; i++) {
+				let row = [];
+				for (let j = startColumn; j < endColumn; j++) {
+					row.push(mapSquares[i][j]);
+				}
+				pattern.push(row);
+			}
 		}
 
 		return pattern;

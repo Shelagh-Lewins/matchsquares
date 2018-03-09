@@ -25,4 +25,3 @@ meteortesting:mocha
 practicalmeteor:mocha
 twbs:bootstrap
 useraccounts:bootstrap
-accounts-ui

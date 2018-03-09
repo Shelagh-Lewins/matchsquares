@@ -10,17 +10,6 @@ header {
 	}
 }
 
-.login-buttons-dropdown-align-right {
-	float: right;
-}
-
-.login-link-text {
-	color: $header-color;
-	display: inline-block;
-	line-height: 20px;
-	padding: 6px 12px;
-}
-
 nav {
 	float: left;
 
@@ -37,6 +26,14 @@ nav {
 				display: inline-block;
 				line-height: 20px;
 				padding: 6px 12px;
+				text-decoration: none;
+
+				&:hover,
+				&.visited,
+				&.focus {
+					color: $header-color;
+					text-decoration: none;
+				}
 			}
 		}
 	}

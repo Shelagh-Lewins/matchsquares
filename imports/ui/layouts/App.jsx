@@ -27,10 +27,6 @@ import { withRouter, Switch, Route } from 'react-router-dom';
 import './App.scss';
 import { Grid } from 'react-bootstrap';
 
-// User Accounts
-import AccountsUIWrapper from '../components/AccountsUIWrapper/AccountsUIWrapper.jsx';
-
-import NewMap from '../components/NewMap/NewMap.jsx';
 import Navigation from '../components/Navigation/Navigation.jsx';
 
 import Home from '../pages/Home/Home.jsx';
@@ -42,10 +38,7 @@ class App extends Component {
 		return (
 			<div className="primary-layout">
 				<header>
-					<AccountsUIWrapper />
 					<Navigation />
-					<NewMap history={this.props.history}
-					/>
 				</header>
 
 				<main>

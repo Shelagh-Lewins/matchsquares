@@ -72,7 +72,7 @@ class MapSquares extends Component {
 	componentWillMount() {
 		// do some stuff before component mounts
 		this.generateMap();
-		this.generatePattern(); // playable
+		this.generatePattern();
 	}
 
 	componentDidMount() {
@@ -81,7 +81,6 @@ class MapSquares extends Component {
 
 	generatePattern() {
 		promisedCall('game.generatePattern', {
-			// 'mapSquares': pattern,
 			'mapRows': this.state.mapRows,
 			'mapColumns': this.state.mapColumns,
 			'patternRows': this.state.patternRows,
