@@ -7,23 +7,24 @@ import rateLimit from '../../modules/rate-limit';
 Meteor.methods({
 	'game.generatePattern': function RandomMove(params) {
 		check(params, {
-			// 'mapSquares': [[Object]],
 			'mapRows': Number,
 			'mapColumns': Number,
 			'patternRows': Number,
 			'patternColumns': Number,
 		});
 
-		// start with a solid blue ground
+		// start with a solid ground the size of the MAP
 		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+		const colorNumber = Math.floor(Random.fraction() * colors.length);
+
 		let mapSquares = [];
 
-		for (let i = 0; i < params.patternRows; i++) {
+		for (let i = 0; i < params.mapRows; i++) {
 			let row = [];
 
-			for (let j = 0; j < params.patternColumns; j++) {
+			for (let j = 0; j < params.mapColumns; j++) {
 				let square = {
-					'color': colors[0],
+					'color': colors[colorNumber],
 					'row': i,
 					'column': j,
 				};
@@ -34,8 +35,7 @@ Meteor.methods({
 			mapSquares.push(row);
 		}
 
-		// make random steps
-		// let data = params.mapSquares;
+		// make random moves from the base MAP. This ensures the pattern can be solved.
 		const generatorSteps = Meteor.settings.private.generatorSteps[params.mapColumns];
 
 		for (let i = 0; i < generatorSteps; i++ ) {
@@ -51,10 +51,27 @@ Meteor.methods({
 			});
 		}
 
-		return mapSquares;
+		const startRow = Math.floor(Random.fraction() * (params.mapRows - params.patternRows));
+		const endRow = startRow + params.patternRows;
+
+		const startColumn = Math.floor(Random.fraction() * (params.mapColumns - params.patternColumns));
+		const endColumn = startColumn + params.patternColumns;
+
+		// select an area the size of the PATTERN
+		let pattern = [];
+		for (let i = startRow; i < endRow; i++) {
+			let row = [];
+			for (let j = startColumn; j < endColumn; j++) {
+				row.push(mapSquares[i][j]);
+			}
+			pattern.push(row);
+		}
+
+		return pattern;
 	},
 	'game.mapSquareClicked': function MapSquareClicked(params) {
 		// check adjacent squares
+
 		const mapSquares = params.mapSquares;
 		const row = params.row;
 		const column = params.column;
@@ -153,5 +170,14 @@ rateLimit({
 		'game.generateBoard',
 	],
 	'limit': 5,
+	'timeRange': 1000,
+});
+
+rateLimit({
+	'methods': [
+		'game.mapSquareClicked',
+		'game.setMapSquareColor',
+	],
+	'limit': 50,
 	'timeRange': 1000,
 });

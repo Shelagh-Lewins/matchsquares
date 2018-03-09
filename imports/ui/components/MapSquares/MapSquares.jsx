@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
 import './MapSquares.scss';
 import { Random } from 'meteor/random';
 import { Meteor } from 'meteor/meteor';
@@ -46,30 +45,6 @@ function MapSquare(props) {
 	);
 }
 
-function GeneratorSquare(props) {
-	return (
-		<li className={`pattern-square ${props.color} ${props.match}`}><span key={props.index}><svg viewBox="0 0 100 100">
-			<polygon points={props.points} /></svg></span></li>
-	);
-}
-
-function RandomMove(props) {
-	function handleSubmit(event) {
-		event.preventDefault();
-
-		props.randomMoveClicked(event, event.target.numberOfMoves.value);
-	}
-
-	return (
-		<form className="random-move form-group" onSubmit={handleSubmit.bind(this)}>
-			<label>
-				<input type="number" name="numberOfMoves" className="form-control" placeholder="Number of moves" defaultValue={1} />
-			</label>
-			<Button type="submit" className="btn btn-secondary" >Random Move</Button>
-		</form>
-	);
-}
-
 class MapSquares extends Component {
 	constructor(props) {
 		super(props);
@@ -79,8 +54,6 @@ class MapSquares extends Component {
 		);
 
 		this.state = {
-			'isGenerator': mapSize.isGenerator,
-			'randomMoves': 0,
 			'mapSquares': [[]],
 			'pattern': [[]],
 			'checkMatch': false,
@@ -99,12 +72,7 @@ class MapSquares extends Component {
 	componentWillMount() {
 		// do some stuff before component mounts
 		this.generateMap();
-
-		if (this.state.isGenerator) {
-			this.generateGenerator(); // test for generating patterns
-		} else {
-			this.generatePattern(); // playable
-		}
+		this.generatePattern(); // playable
 	}
 
 	componentDidMount() {
@@ -112,26 +80,6 @@ class MapSquares extends Component {
 	}
 
 	generatePattern() {
-		// generate a new pattern
-		/* const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
-		let pattern = [];
-
-		for (let i = 0; i < this.state.patternRows; i++) {
-			let row = [];
-
-			for (let j = 0; j < this.state.patternColumns; j++) {
-				let square = {
-					'color': colors[0],
-					'row': i,
-					'column': j,
-				};
-
-				row.push(square);
-			}
-
-			pattern.push(row);
-		} */
-
 		promisedCall('game.generatePattern', {
 			// 'mapSquares': pattern,
 			'mapRows': this.state.mapRows,
@@ -145,26 +93,11 @@ class MapSquares extends Component {
 				'checkMatch': true,
 				'acceptInput': true,
 			} );
-
-			/*
-			const randomMoves = this.state.randomMoves + 1;
-
-			this.setState({
-				'generator': data,
-				'randomMoves': randomMoves,
-			}); */
 		},
 		(err) => {
-			toastr.error(`Error performing random move: ${err}`);
+			toastr.error(`Error performing generating pattern: ${err}`);
 		}
 		);
-
-		/* this.setState( {
-			'pattern': pattern,
-			'match': {},
-			'checkMatch': true,
-			'acceptInput': true,
-		} ); */
 	}
 
 	generateMap() {
@@ -185,34 +118,6 @@ class MapSquares extends Component {
 		this.setState({
 			'mapSquares': data,
 		});
-	}
-
-	generateGenerator() {
-		// generate a pattern by random moves from a uniform color map
-		// this can definitely be solved
-
-		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
-		let generator = [];
-
-		for (let i = 0; i < this.state.patternRows; i++) {
-			let row = [];
-
-			for (let j = 0; j < this.state.patternColumns; j++) {
-				let square = {
-					'color': colors[0],
-					'row': i,
-					'column': j,
-				};
-
-				row.push(square);
-			}
-
-			generator.push(row);
-		}
-
-		this.setState( {
-			'generator': generator,
-		} );
 	}
 
 	findMatch() {
@@ -481,58 +386,6 @@ class MapSquares extends Component {
 		);
 	}
 
-	randomMoveClicked(event, number) {
-		const myInt = parseInt(number, 10);
-		promisedCall('game.randomMove', {
-			'mapSquares': this.state.generator,
-			'number': myInt,
-			'mapRows': this.state.mapRows,
-			'mapColumns': this.state.mapColumns,
-			'patternRows': this.state.patternRows,
-			'patternColumns': this.state.patternColumns,
-		}).then((data) => {
-			const randomMoves = this.state.randomMoves + 1;
-
-			this.setState({
-				'generator': data,
-				'randomMoves': randomMoves,
-			});
-		},
-		(err) => {
-			toastr.error(`Error performing random move: ${err}`);
-		}
-		);
-	}
-
-	renderGeneratorRow(generatorrow, index) {
-		return (
-			<ul className='patternrow' key={`patternrow ${index}`}>
-				{
-					generatorrow.map( (patternsquare) => {
-						const shape = Meteor.settings.public.mapSquareShapes.find((obj) => obj.color === patternsquare.color );
-
-						let match = '';
-						if (this.state.match.row) {
-							match = 'match';
-						}
-
-						return (
-							<GeneratorSquare
-								key={`patternsquare_${patternsquare.row}_${patternsquare.column}`}
-								index={`patternsquare_${patternsquare.row}_${patternsquare.column}`}
-								row={patternsquare.row}
-								column={patternsquare.column}
-								color={patternsquare.color}
-								match={match}
-								points={shape.points}
-								findMatch={this.findMatch.bind(this)}
-							/>);
-					})
-				}
-			</ul>
-		);
-	}
-
 	renderPattern(pattern) {
 		return (
 			<div className="pattern-holder">
@@ -549,20 +402,6 @@ class MapSquares extends Component {
 				<ul className='game-map'>
 					{mapSquares.map( (maprow, index) => this.renderMapRow(maprow, index))}
 				</ul>
-			</div>
-		);
-	}
-
-	renderGenerator(generator) {
-		return (
-			<div className="generator-holder">
-				<h2>Generator</h2>
-				<ul className='generator'>
-					{generator.map( (generatorrow, index) => this.renderGeneratorRow(generatorrow, index))}
-				</ul>
-				<RandomMove
-					randomMoveClicked={this.randomMoveClicked.bind(this)}
-				/>
 			</div>
 		);
 	}
@@ -631,21 +470,13 @@ class MapSquares extends Component {
 			mapSquaresArray.push(row);
 		}
 
-		let pattern = '';
 		const mapSquares = this.renderMap(mapSquaresArray);
-		let Generator = '';
-
-		if (this.state.isGenerator) {
-			Generator = this.renderGenerator(this.state.generator);
-		} else {
-			pattern = this.renderPattern(this.state.pattern);
-		}
+		const pattern = this.renderPattern(this.state.pattern);
 
 		return (
 			<div>
 				{pattern}
 				{mapSquares}
-				{Generator}
 			</div>
 		);
 	}
