@@ -32,16 +32,14 @@ Meteor.methods({
 			}
 		} else {
 			// the pattern is the same size as the map, so must ensure pattern is solvable
-			// start with a solid ground the size of the MAP
+			// start with a solid ground the size of the map
 			const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 			const colorNumber = Math.floor(Random.fraction() * colors.length);
 
-			let mapSquares = [];
-
-			for (let i = 0; i < params.mapRows; i++) {
+			for (let i = 0; i < params.patternRows; i++) {
 				let row = [];
 
-				for (let j = 0; j < params.mapColumns; j++) {
+				for (let j = 0; j < params.patternColumns; j++) {
 					let square = {
 						'color': colors[colorNumber],
 						'row': i,
@@ -51,38 +49,23 @@ Meteor.methods({
 					row.push(square);
 				}
 
-				mapSquares.push(row);
+				pattern.push(row);
 			}
 
-			// make random moves from the base MAP. This ensures the pattern can be solved.
-			const generatorSteps = Meteor.settings.private.generatorSteps[params.mapColumns];
+			// make random moves from the base map. This ensures the pattern can be solved.
+			const generatorSteps = Meteor.settings.private.generatorSteps[params.patternColumns];
 
 			for (let i = 0; i < generatorSteps; i++ ) {
-				const row = Math.floor(Random.fraction() * params.mapRows);
-				const column = Math.floor(Random.fraction() * params.mapColumns);
+				const row = Math.floor(Random.fraction() * params.patternRows);
+				const column = Math.floor(Random.fraction() * params.patternColumns);
 
-				mapSquares = Meteor.call('game.mapSquareClicked', {
-					'mapSquares': mapSquares,
+				pattern = Meteor.call('game.mapSquareClicked', {
+					'mapSquares': pattern,
 					'row': row,
 					'column': column,
-					'mapRows': params.mapRows,
-					'mapColumns': params.mapColumns,
+					'mapRows': params.patternRows,
+					'mapColumns': params.patternColumns,
 				});
-			}
-
-			const startRow = Math.floor(Random.fraction() * (params.mapRows - params.patternRows));
-			const endRow = startRow + params.patternRows;
-
-			const startColumn = Math.floor(Random.fraction() * (params.mapColumns - params.patternColumns));
-			const endColumn = startColumn + params.patternColumns;
-
-			// select an area the size of the PATTERN
-			for (let i = startRow; i < endRow; i++) {
-				let row = [];
-				for (let j = startColumn; j < endColumn; j++) {
-					row.push(mapSquares[i][j]);
-				}
-				pattern.push(row);
 			}
 		}
 
