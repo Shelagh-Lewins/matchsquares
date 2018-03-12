@@ -1,10 +1,26 @@
 @import '../../stylesheets/colors';
 @import '../../stylesheets/mixins';
 
+.game-holder {
+	position: relative;
+	width: 100%;
+}
+
 // pattern
 .pattern-holder {
 	position: relative;
 	width: 100%;
+
+	ul {
+		background: #fff;
+	}
+
+	.frame {
+		@include horizontal-centerer;
+		clear: both;
+		float: left;
+		margin-bottom: 8px;
+	}
 }
 
 .pattern {
@@ -60,8 +76,6 @@
 	span {
 		background-color: $ms-background;
 		display: inline-block;
-		height: 70px;
-		width: 70px;
 
 		&:last-child {
 			border-right: 1px solid $ms-border;
@@ -153,16 +167,19 @@
 }
 
 .game-status {
-	position: relative;
-
-	.centerer {
-		@include horizontal-centerer;
-		float: left;
-	}
+	@include horizontal-centerer;
+	float: left;
 
 	span {
 		margin: 0 10px;
 	}
+}
+
+.new-pattern {
+	@include horizontal-centerer;
+	clear: both;
+	float: left;
+	margin: 8px 0;
 }
 
 

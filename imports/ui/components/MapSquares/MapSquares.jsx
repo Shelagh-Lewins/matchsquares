@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
 import './MapSquares.scss';
 import { Random } from 'meteor/random';
 import { Meteor } from 'meteor/meteor';
@@ -11,8 +12,13 @@ import 'toastr/build/toastr.css';
 
 function PatternSquare(props) {
 	return (
-		<li className={`pattern-square ${props.color} ${props.match}`}><span key={props.index}><svg viewBox="0 0 100 100">
-			<polygon points={props.points} /></svg></span></li>
+		<li className={`pattern-square ${props.color} ${props.match}`}
+		><span key={props.index} style={{
+				'height': Meteor.settings.public.patternSquareWidth,
+				'width': Meteor.settings.public.patternSquareHeight,
+				'borderWidth': Meteor.settings.public.patternBorderWidth,
+			}}><svg viewBox="0 0 100 100">
+					<polygon points={props.points} /></svg></span></li>
 	);
 }
 
@@ -34,7 +40,7 @@ function MapSquare(props) {
 			<span key={props.index} style={{
 				'top': props.slideDistance,
 				'height': Meteor.settings.public.mapSquareHeight,
-				'width': Meteor.settings.public.mapSquareHeight,
+				'width': Meteor.settings.public.mapSquareWidth,
 				'transition': props.slideTransition,
 			}}>
 				<svg viewBox="0 0 100 100">
@@ -42,6 +48,12 @@ function MapSquare(props) {
 				</svg>
 			</span>
 		</li>
+	);
+}
+
+function NewPatternButton(props) {
+	return (
+		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >Give me a new pattern</Button>
 	);
 }
 
@@ -82,6 +94,10 @@ class MapSquares extends Component {
 		// do some stuff after component mounts
 	}
 
+	newPatternClicked() {
+		this.generatePattern();
+	}
+
 	generatePattern() {
 		promisedCall('game.generatePattern', {
 			'mapRows': this.state.mapRows,
@@ -94,7 +110,6 @@ class MapSquares extends Component {
 				'match': {},
 				'checkMatch': true,
 				'acceptInput': true,
-				'clicks': 0,
 			} );
 		},
 		(err) => {
@@ -120,6 +135,7 @@ class MapSquares extends Component {
 
 		this.setState({
 			'mapSquares': data,
+			'clicks': 0,
 		});
 	}
 
@@ -407,12 +423,28 @@ class MapSquares extends Component {
 		);
 	}
 
-	renderPattern(pattern) {
+
+	renderNewPatternButton() {
 		return (
-			<div className="pattern-holder">
-				<ul className='pattern'>
-					{pattern.map( (patternrow, index) => this.renderPatternRow(patternrow, index))}
-				</ul>
+			<div className="new-pattern">
+				<NewPatternButton
+					handleClick={this.newPatternClicked.bind(this)}
+				/>
+			</div>
+		);
+	}
+
+	renderPattern(params) {
+		return (
+			<div className='pattern-holder'>
+				<div className='frame' style={{
+					'height': params.height,
+					'width': params.width,
+				}}>
+					<ul className='pattern'>
+						{params.pattern.map( (patternrow, index) => this.renderPatternRow(patternrow, index))}
+					</ul>
+				</div>
 			</div>
 		);
 	}
@@ -430,17 +462,15 @@ class MapSquares extends Component {
 	renderGameStatus(params) {
 		return (
 			<div className='game-status'>
-				<div className='centerer'>
-					<span className='clicks'>
-						Solved: {params.solved}
-					</span>
-					<span className='clicks'>
-						Clicks: {params.clicks}
-					</span>
-					<span className='clicks'>
-						Average clicks: {params.averageClicks}
-					</span>
-				</div>
+				<span className='clicks'>
+					Solved: {params.solved}
+				</span>
+				<span className='clicks'>
+					Clicks: {params.clicks}
+				</span>
+				<span className='clicks'>
+					Average clicks: {params.averageClicks}
+				</span>
 			</div>
 		);
 	}
@@ -508,16 +538,22 @@ class MapSquares extends Component {
 		}
 
 		const mapSquares = this.renderMap(mapSquaresArray);
-		const pattern = this.renderPattern(this.state.pattern);
+
+		const height = this.state.patternRows * (Meteor.settings.public.patternSquareHeight + Meteor.settings.public.patternBorderWidth) + Meteor.settings.public.patternBorderWidth;
+		const width = this.state.patternRows * (Meteor.settings.public.patternSquareWidth + Meteor.settings.public.patternBorderWidth) + Meteor.settings.public.patternBorderWidth;
+		const pattern = this.renderPattern({ 'pattern': this.state.pattern, 'width': width, 'height': height });
+
 		const gameStatus = this.renderGameStatus({
 			'clicks': this.state.clicks,
 			'solved': this.state.solved,
 			'averageClicks': this.calculateAverage(this.state.clickHistory),
 		});
+		const newPatternButton = this.renderNewPatternButton();
 
 		return (
-			<div>
+			<div className="game-holder">
 				{gameStatus}
+				{newPatternButton}
 				{pattern}
 				{mapSquares}
 			</div>
