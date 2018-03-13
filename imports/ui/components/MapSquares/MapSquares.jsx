@@ -5,6 +5,8 @@ import { Random } from 'meteor/random';
 import { Meteor } from 'meteor/meteor';
 
 import promisedCall from '../../../api/client/promised-call.js';
+import localStorageTest from '../../../api/client/local-storage-test.js';
+import storeGameStatus from '../../../api/client/store-game-status.js';
 
 // notifications
 import toastr from 'toastr';
@@ -65,6 +67,14 @@ class MapSquares extends Component {
 			obj.url === this.props.url
 		);
 
+		const storedData = localStorage.getItem(this.props.url) ?  JSON.parse(localStorage.getItem(this.props.url)) : {};
+
+		// const storedData = JSON.parse(localStorage.getItem(this.props.url));
+
+		const clicks = typeof storedData.clicks !== 'undefined' ? storedData.clicks : 0;
+		const solved = typeof storedData.solved !== 'undefined' ? storedData.solved : 0;
+		const clickHistory = typeof storedData.clickHistory !== 'undefined' ? storedData.clickHistory : [];
+
 		this.state = {
 			'mapSquares': [[]],
 			'pattern': [[]],
@@ -78,9 +88,11 @@ class MapSquares extends Component {
 			'mapColumns': mapSize.mapColumns,
 			'patternRows': mapSize.patternRows,
 			'patternColumns': mapSize.patternColumns,
-			'clicks': 0,
-			'solved': 0,
-			'clickHistory': [],
+			'clicks': clicks,
+			'solved': solved,
+			'clickHistory': clickHistory,
+			'useLocalStorage': localStorageTest(),
+			'localStorageKey': this.props.url,
 		};
 	}
 
@@ -133,9 +145,15 @@ class MapSquares extends Component {
 			}
 		}
 
+		const clicks = 0;
+
+		storeGameStatus(this.state.localStorageKey, {
+			'clicks': clicks,
+		});
+
 		this.setState({
 			'mapSquares': data,
-			'clicks': 0,
+			'clicks': clicks,
 		});
 	}
 
@@ -189,12 +207,21 @@ class MapSquares extends Component {
 			}
 			clickHistory.push(this.state.clicks);
 
+			const clicks = 0;
+			const solved = this.state.solved + 1;
+
+			storeGameStatus(this.state.localStorageKey, {
+				'clicks': clicks,
+				'solved': solved,
+				'clickHistory': clickHistory,
+			});
+
 			this.setState( {
 				'checkMatch': false,
 				'match': match,
 				'acceptInput': false,
-				'clicks': 0,
-				'solved': this.state.solved + 1,
+				'clicks': clicks,
+				'solved': solved,
 				'clickHistory': clickHistory,
 			});
 
@@ -316,8 +343,14 @@ class MapSquares extends Component {
 			}
 		}
 
+		const clicks = this.state.clicks + 1;
+
+		storeGameStatus(this.state.localStorageKey, {
+			'clicks': clicks,
+		});
+
 		this.setState({
-			'clicks': this.state.clicks + 1,
+			'clicks': clicks,
 		});
 		this.setMapSquareColor({'squares': affectedSquares});
 		this.findMatch();
@@ -539,8 +572,10 @@ class MapSquares extends Component {
 
 		const mapSquares = this.renderMap(mapSquaresArray);
 
-		const height = this.state.patternRows * (Meteor.settings.public.patternSquareHeight + Meteor.settings.public.patternBorderWidth) + Meteor.settings.public.patternBorderWidth;
-		const width = this.state.patternRows * (Meteor.settings.public.patternSquareWidth + Meteor.settings.public.patternBorderWidth) + Meteor.settings.public.patternBorderWidth;
+		const height = this.state.patternRows * (Meteor.settings.public.patternSquareHeight + Meteor.settings.public.patternBorderWidth)
+		+ Meteor.settings.public.patternBorderWidth;
+		const width = this.state.patternRows * (Meteor.settings.public.patternSquareWidth + Meteor.settings.public.patternBorderWidth)
+		+ Meteor.settings.public.patternBorderWidth;
 		const pattern = this.renderPattern({ 'pattern': this.state.pattern, 'width': width, 'height': height });
 
 		const gameStatus = this.renderGameStatus({
