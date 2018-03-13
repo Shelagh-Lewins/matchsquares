@@ -59,6 +59,12 @@ function NewPatternButton(props) {
 	);
 }
 
+function DeleteGameStatusButton(props) {
+	return (
+		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >Reset</Button>
+	);
+}
+
 class MapSquares extends Component {
 	constructor(props) {
 		super(props);
@@ -108,6 +114,25 @@ class MapSquares extends Component {
 
 	newPatternClicked() {
 		this.generatePattern();
+	}
+
+	deleteGameStatusButtonClicked() {
+		console.log('clicked');
+		const clicks = 0;
+		const solved = 0;
+		const clickHistory = [];
+
+		storeGameStatus(this.state.localStorageKey, {
+			'clicks': clicks,
+			'solved': solved,
+			'clickHistory': clickHistory,
+		});
+
+		this.setState({
+			'clicks': clicks,
+			'solved': solved,
+			'clickHistory': clickHistory,
+		});
 	}
 
 	generatePattern() {
@@ -456,7 +481,6 @@ class MapSquares extends Component {
 		);
 	}
 
-
 	renderNewPatternButton() {
 		return (
 			<div className="new-pattern">
@@ -503,6 +527,11 @@ class MapSquares extends Component {
 				</span>
 				<span className='clicks'>
 					Average clicks: {params.averageClicks}
+				</span>
+				<span className="delete-game-status">
+					<DeleteGameStatusButton
+						handleClick={this.deleteGameStatusButtonClicked.bind(this)}
+					/>
 				</span>
 			</div>
 		);
