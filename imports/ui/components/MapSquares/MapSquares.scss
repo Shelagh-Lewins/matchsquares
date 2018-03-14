@@ -8,6 +8,7 @@
 
 // pattern
 .pattern-holder {
+	margin: 8px 0 0;
 	position: relative;
 	width: 100%;
 
@@ -124,6 +125,7 @@
 	display: inline-block;
 	font-size: 0;
 	position: relative;
+	cursor: pointer;
 
 	&.blue {
 		polygon {
@@ -166,9 +168,18 @@
 	}
 }
 
+.dashboard {
+	background-color: $dashboard-bg;
+	overflow: hidden;
+	padding: 8px 0;
+	width: 100%;
+}
+
 .game-status {
 	@include horizontal-centerer;
 	float: left;
+	font-size: 16px;
+	font-weight: bold;
 
 	span {
 		margin: 0 10px;
@@ -179,6 +190,6 @@
 	@include horizontal-centerer;
 	clear: both;
 	float: left;
-	margin: 8px 0;
+	margin: 8px 0 0;
 }
 

@@ -5,7 +5,6 @@ import { Random } from 'meteor/random';
 import { Meteor } from 'meteor/meteor';
 
 import promisedCall from '../../../api/client/promised-call.js';
-import localStorageTest from '../../../api/client/local-storage-test.js';
 import storeGameStatus from '../../../api/client/store-game-status.js';
 
 // notifications
@@ -75,8 +74,6 @@ class MapSquares extends Component {
 
 		const storedData = localStorage.getItem(this.props.url) ?  JSON.parse(localStorage.getItem(this.props.url)) : {};
 
-		// const storedData = JSON.parse(localStorage.getItem(this.props.url));
-
 		const clicks = typeof storedData.clicks !== 'undefined' ? storedData.clicks : 0;
 		const solved = typeof storedData.solved !== 'undefined' ? storedData.solved : 0;
 		const clickHistory = typeof storedData.clickHistory !== 'undefined' ? storedData.clickHistory : [];
@@ -97,7 +94,6 @@ class MapSquares extends Component {
 			'clicks': clicks,
 			'solved': solved,
 			'clickHistory': clickHistory,
-			'useLocalStorage': localStorageTest(),
 			'localStorageKey': this.props.url,
 		};
 	}
@@ -117,7 +113,6 @@ class MapSquares extends Component {
 	}
 
 	deleteGameStatusButtonClicked() {
-		console.log('clicked');
 		const clicks = 0;
 		const solved = 0;
 		const clickHistory = [];
@@ -526,7 +521,7 @@ class MapSquares extends Component {
 					Clicks: {params.clicks}
 				</span>
 				<span className='clicks'>
-					Average clicks: {params.averageClicks}
+					Average: {params.averageClicks}
 				</span>
 				<span className="delete-game-status">
 					<DeleteGameStatusButton
@@ -616,8 +611,10 @@ class MapSquares extends Component {
 
 		return (
 			<div className="game-holder">
-				{gameStatus}
-				{newPatternButton}
+				<div className="dashboard">
+					{gameStatus}
+					{newPatternButton}
+				</div>
 				{pattern}
 				{mapSquares}
 			</div>

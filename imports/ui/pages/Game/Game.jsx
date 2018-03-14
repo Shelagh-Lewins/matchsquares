@@ -7,7 +7,6 @@ class Game extends Component {
 	render() {
 		return (
 			<div className="Map">
-				<p>{JSON.stringify(this.props.match.params.name)}</p>
 				<MapSquares
 					url={this.props.match.params.url}
 				/>

@@ -1,6 +1,8 @@
 function storeGameStatus(localStorageKey, data) {
 	try {
 		let storedData = JSON.parse(localStorage.getItem(localStorageKey));
+		storedData = storedData ? storedData : {};
+
 		Object.keys(data).map((key) => {
 			storedData[key] = data[key];
 		});
