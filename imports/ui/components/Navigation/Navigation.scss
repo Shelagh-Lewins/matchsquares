@@ -1,0 +1,48 @@
+@import '../../stylesheets/colors';
+
+header {
+	background: $header-bg;
+	overflow: hidden;
+	padding: 8px 0;
+
+	button {
+		margin: 0 8px;
+	}
+}
+
+nav {
+	float: left;
+
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+
+		li {
+			display: inline;
+
+			&:first-child  a {
+				background: url('header-icon.png') transparent no-repeat;
+				background-size: 40px 40px;
+				padding-left: 32px;
+			}
+
+			a {
+				color: $header-color;
+				display: inline-block;
+				font-size: 16px;
+				font-weight: bold;
+				line-height: 20px;
+				padding: 6px 12px;
+				text-decoration: none;
+
+				&:hover,
+				&:visited,
+				&:focus {
+					color: $header-color;
+					text-decoration: none;
+				}				
+			}
+		}
+	}
+}

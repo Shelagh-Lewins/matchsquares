@@ -4,45 +4,4 @@ body {
 	background: $body-bg;
 }
 
-header {
-	background: $header-bg;
-	overflow: hidden;
-	padding: 8px 0;
 
-	button {
-		margin: 0 8px;
-	}
-}
-
-nav {
-	float: left;
-
-	ul {
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-
-		li {
-			display: inline;
-
-			a {
-				color: $header-color;
-				display: inline-block;
-				line-height: 20px;
-				padding: 6px 12px;
-				text-decoration: none;
-
-				&:hover,
-				&.visited,
-				&.focus {
-					color: $header-color;
-					text-decoration: none;
-				}
-			}
-		}
-	}
-}
-
-.container-fluid {
-	// padding: 0;
-}
