@@ -171,7 +171,7 @@ rateLimit({
 	'methods': [
 		'game.generateBoard',
 	],
-	'limit': 5,
+	'limit': 2,
 	'timeRange': 1000,
 });
 

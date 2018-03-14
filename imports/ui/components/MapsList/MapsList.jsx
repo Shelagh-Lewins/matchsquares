@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 
+import './MapsList.scss';
+
 function MapLink(props) {
 	return (
 		<li>
@@ -16,36 +18,60 @@ class MapsList extends Component {
 		super(props);
 	}
 
-	renderMapList() {
+	buildSingleList(list, className, name) {
 		const history = this.props.history;
 
 		return (
-			<Row>
-				<Col>
-					<ul>
-						{
-							Meteor.settings.public.mapSizes.map( (size) => <MapLink
-								key={'map' + size.name}
-								mapName={size.name}
-								url={size.url}
-								history={history}
-							/> )
-						}
-					</ul>
-				</Col>
-			</Row>
+			<Col xs={12} sm={6}>
+				<h3>{name}</h3>
+				<ul className={`${className}`}>
+					{
+						list.map( (size) => <MapLink
+							key={'map' + size.name}
+							mapName={size.name}
+							url={size.url}
+							history={history}
+						/> )
+					}
+				</ul>
+			</Col>
+		);
+	}
+
+	renderMapLists() {
+		// split the maps into easy and challenging
+		const easyMaps = [];
+		const challengingMaps = [];
+
+		// challenging maps have pattern and map the same size; no working rows
+		Meteor.settings.public.maps.map( (map) => {
+			if (map.mapRows === map.patternRows && map.mapColumns === map.patternColumns) {
+				challengingMaps.push(map);
+			} else {
+				easyMaps.push(map);
+			}
+		});
+
+		return (
+			{
+				'easyMaps': easyMaps,
+				'challengingMaps': challengingMaps,
+			}
 		);
 	}
 
 	render() {
-		let maps = this.renderMapList(this.props.maps);
+		const mapLists = this.renderMapLists();
+
+		const easyMapList = this.buildSingleList(mapLists.easyMaps, 'easy', 'Easy');
+		const challengingMapList = this.buildSingleList(mapLists.challengingMaps, 'challenging', 'Challenging');
 
 		return (
-			<div className="home">
-				<h1>Game Sizes</h1>
-				<div className = "maps">
-					{maps}
-				</div>
+			<div className = "maps-list">
+				<Row>
+					{easyMapList}
+					{challengingMapList}
+				</Row>
 			</div>
 		);
 	}

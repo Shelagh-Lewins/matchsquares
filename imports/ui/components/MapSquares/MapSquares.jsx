@@ -68,7 +68,7 @@ class MapSquares extends Component {
 	constructor(props) {
 		super(props);
 
-		const mapSize = Meteor.settings.public.mapSizes.find((obj) =>
+		const map = Meteor.settings.public.maps.find((obj) =>
 			obj.url === this.props.url
 		);
 
@@ -87,10 +87,10 @@ class MapSquares extends Component {
 			'slidingSquares': [],
 			'slideDistance': 0,
 			'slideTransition': '',
-			'mapRows': mapSize.mapRows,
-			'mapColumns': mapSize.mapColumns,
-			'patternRows': mapSize.patternRows,
-			'patternColumns': mapSize.patternColumns,
+			'mapRows': map.mapRows,
+			'mapColumns': map.mapColumns,
+			'patternRows': map.patternRows,
+			'patternColumns': map.patternColumns,
 			'clicks': clicks,
 			'solved': solved,
 			'clickHistory': clickHistory,
