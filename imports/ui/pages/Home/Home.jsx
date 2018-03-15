@@ -16,7 +16,7 @@ const Home = ({ history }) => (
 				<p>Tap tiles until they match the pattern displayed above the board in this simple puzzle game. Choose a board and start playing!</p>
 			</Col>
 			<Col xs={12} sm={6}>
-				<p>MatchSquares is free to play and there are no adverts. If you enjoy playing MatchSquares, perhaps you might make a small donation to help keep the server running and the developer supplied with coffee?</p>
+				<p>MatchSquares is free to play and there are no adverts. If you enjoy playing MatchSquares, perhaps you might make a small donation?</p>
 				<DonateButton
 					center={true}
 				/>
