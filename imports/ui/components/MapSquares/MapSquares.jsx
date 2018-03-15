@@ -81,6 +81,7 @@ class MapSquares extends Component {
 		this.state = {
 			'mapSquares': [[]],
 			'pattern': [[]],
+			'generatingPattern': false,
 			'checkMatch': false,
 			'match': {},
 			'acceptInput': false,
@@ -131,6 +132,10 @@ class MapSquares extends Component {
 	}
 
 	generatePattern() {
+		this.setState( {
+			'generatingPattern': true,
+		});
+
 		promisedCall('game.generatePattern', {
 			'mapRows': this.state.mapRows,
 			'mapColumns': this.state.mapColumns,
@@ -138,6 +143,7 @@ class MapSquares extends Component {
 			'patternColumns': this.state.patternColumns,
 		}).then((data) => {
 			this.setState( {
+				'generatingPattern': false,
 				'pattern': data,
 				'match': {},
 				'checkMatch': true,
@@ -487,17 +493,15 @@ class MapSquares extends Component {
 	}
 
 	renderPattern(params) {
+		if (params.generatingPattern) {
+			return (
+				<span className='status-text'>Generating pattern...</span>
+			);
+		}
 		return (
-			<div className='pattern-holder'>
-				<div className='frame' style={{
-					'height': params.height,
-					'width': params.width,
-				}}>
-					<ul className='pattern'>
-						{params.pattern.map( (patternrow, index) => this.renderPatternRow(patternrow, index))}
-					</ul>
-				</div>
-			</div>
+			<ul className='pattern'>
+				{params.pattern.map( (patternrow, index) => this.renderPatternRow(patternrow, index))}
+			</ul>
 		);
 	}
 
@@ -533,9 +537,6 @@ class MapSquares extends Component {
 	}
 
 	render() {
-		if (this.props.loading) return <div></div>;
-
-		// convert nested objects to nested arrays
 		let mapSquaresArray = [];
 
 		const numberOfRows = this.state.mapRows;
@@ -598,9 +599,14 @@ class MapSquares extends Component {
 
 		const height = this.state.patternRows * (Meteor.settings.public.patternSquareHeight + Meteor.settings.public.patternBorderWidth)
 		+ Meteor.settings.public.patternBorderWidth;
+
 		const width = this.state.patternRows * (Meteor.settings.public.patternSquareWidth + Meteor.settings.public.patternBorderWidth)
 		+ Meteor.settings.public.patternBorderWidth;
-		const pattern = this.renderPattern({ 'pattern': this.state.pattern, 'width': width, 'height': height });
+
+		const pattern = this.renderPattern({
+			'pattern': this.state.pattern,
+			'generatingPattern': this.state.generatingPattern,
+		});
 
 		const gameStatus = this.renderGameStatus({
 			'clicks': this.state.clicks,
@@ -615,7 +621,15 @@ class MapSquares extends Component {
 					{gameStatus}
 					{newPatternButton}
 				</div>
-				{pattern}
+
+				<div className='pattern-holder'>
+					<div className={'frame ' + height} style={{
+						'height': height,
+						'width': width,
+					}}>
+						{pattern}
+					</div>
+				</div>
 				{mapSquares}
 			</div>
 		);
