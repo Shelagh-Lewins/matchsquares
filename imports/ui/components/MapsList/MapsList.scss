@@ -1,3 +1,78 @@
+@import '../../stylesheets/colors';
+@import '../../stylesheets/mixins';
+
 .maps-list {
 	padding: 0 15px;
+
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	a {
+		background-color: $maplist-background;
+		border: 1px solid $maplist-border;
+		border-radius: 8px;
+		color: $body-color;
+		display: block;
+		font-size: 16px;
+		line-height: 1.5;
+		margin: 0 0 8px;
+		padding: 8px 16px;
+
+		&:hover,
+		&:visited,
+		&:focus {
+			color: $body-color;
+			text-decoration: none;
+		}
+
+		.preview {
+			display: block;
+		}		
+	}
+
+	@include media-breakpoint(md) {
+		a {
+			font-weight: bold;
+			padding: 16px 32px;
+
+			&.map-3x2 {
+				.preview {
+					@include map-preview('/map-3x2.png', 132px, 90px);
+				}
+			}
+
+			&.map-4x3 {
+				.preview {
+					@include map-preview('/map-4x3.png', 174px, 132px);
+				}
+			}
+
+			&.map-5x4 {
+				.preview {
+					@include map-preview('/map-5x4.png', 217px, 174px);
+				}
+			}
+
+			&.map-3x3 {
+				.preview {
+					@include map-preview('/map-3x3.png', 133px, 132px);
+				}
+			}
+
+			&.map-4x4 {
+				.preview {
+					@include map-preview('/map-4x4.png', 174px, 174px);
+				}
+			}
+
+			&.map-5x5 {
+				.preview {
+					@include map-preview('/map-5x5.png', 217px, 217px);
+				}
+			}
+		}
+	}
 }

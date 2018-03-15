@@ -8,7 +8,7 @@ import './MapsList.scss';
 function MapLink(props) {
 	return (
 		<li>
-			<Link to={`/game/${props.url}`}>{props.mapName}</Link>
+			<Link to={`/game/${props.url}`} className={'map-' + props.url} ><span className='name'>{props.mapName}</span><span className='preview'></span></Link>
 		</li>
 	);
 }

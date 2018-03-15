@@ -122,10 +122,10 @@
 }
 
 .map-square {
+	cursor: pointer;
 	display: inline-block;
 	font-size: 0;
-	position: relative;
-	cursor: pointer;
+	position: relative;	
 
 	&.blue {
 		polygon {
