@@ -4,6 +4,6 @@
 	transform: translate(-50%, 0);
 }
 
-@mixin ms-gradient($color1, $color2, $color3, $color4, $color5) {
-	background-image: linear-gradient(to right bottom, $color1, $color2, $color3, $color4, $color5);
+@mixin ms-gradient($color1, $color2) {
+	background-image: linear-gradient(to right bottom, $color1, $color2);
 }

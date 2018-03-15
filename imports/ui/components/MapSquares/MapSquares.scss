@@ -153,7 +153,7 @@
 
 	span {
 		background: $ms-background;
-		@include ms-gradient($ms-default-1, $ms-default-2, $ms-default-3, $ms-default-4, $ms-default-5);
+		@include ms-gradient($ms-default-1, $ms-default-2);
 		border: 1px solid $ms-border;
 		border-radius: 12px;
 		display: inline-block;
@@ -163,7 +163,7 @@
 
 	&.match {
 		span {
-			@include ms-gradient($ms-match-1, $ms-match-2, $ms-match-3, $ms-match-4, $ms-match-5);
+			@include ms-gradient($ms-match-1, $ms-match-2);
 		}
 	}
 }

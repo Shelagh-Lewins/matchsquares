@@ -22,9 +22,9 @@ nav {
 			display: inline;
 
 			&:first-child  a {
-				background: url('header-icon.png') transparent no-repeat;
-				background-size: 40px 40px;
-				padding-left: 32px;
+				background: url('/header-icon.png') transparent no-repeat;
+				background-size: 36px 36px;
+				padding-left: 44px;
 			}
 
 			a {
@@ -32,7 +32,8 @@ nav {
 				display: inline-block;
 				font-size: 16px;
 				font-weight: bold;
-				line-height: 20px;
+				line-height: 1.5;
+				margin-left: 8px;
 				padding: 6px 12px;
 				text-decoration: none;
 
