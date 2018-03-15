@@ -1,0 +1,12 @@
+@import '../../stylesheets/mixins';
+
+.donate-button {
+	&.center {
+		position: relative;
+
+		form {
+			@include horizontal-centerer;
+			float: left;
+		}
+	}
+}
