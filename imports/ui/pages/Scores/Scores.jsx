@@ -4,11 +4,10 @@ import { Meteor } from 'meteor/meteor';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
-import './Scores.css';
+import './Scores.scss';
 
 class About extends Component {
 	renderScores() {
-	// list all the maps
 		// split the maps into easy and challenging
 		const easyMaps = [];
 		const challengingMaps = [];
@@ -16,7 +15,6 @@ class About extends Component {
 		Meteor.settings.public.maps.map((map) => {
 			// is there stored data for this map?
 			const storedData = localStorage.getItem(map.url) ?  JSON.parse(localStorage.getItem(map.url)) : {};
-			console.log(`stored data for ${map.url}: ${JSON.stringify(storedData)}`);
 
 			const solved = storedData.solved ? storedData.solved : '-';
 			const averageClicks = storedData.averageClicks ? storedData.averageClicks : '-';
@@ -40,7 +38,6 @@ class About extends Component {
 			'challengingMaps': challengingMaps,
 		};
 
-		console.log(`data ${JSON.stringify(data)}`);
 		const headerStyle = {
 			'color': '#fff',
 			'backgroundColor': '#51376b',
@@ -64,15 +61,11 @@ class About extends Component {
 
 		return (
 			<div>
-				{/* <ul className='scores'>
-					{data.map( (map, index) => <li key={index}>{map.name}</li>)}
-				</ul> */}
 				<h2>Easy</h2>
 				<BootstrapTable
 					keyField='url'
 					data={ data.easyMaps }
 					columns={ columns }
-					striped
 					rowStyle={ rowStyle }
 				/>
 				<h2>Challenging</h2>
@@ -80,7 +73,6 @@ class About extends Component {
 					keyField='url'
 					data={ data.challengingMaps }
 					columns={ columns }
-					striped
 					rowStyle={ rowStyle }
 				/>
 			</div>

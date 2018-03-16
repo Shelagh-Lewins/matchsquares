@@ -1,0 +1,33 @@
+@import '../../stylesheets/colors';
+
+.react-bootstrap-table {
+	max-width: 560px;
+
+	th {
+		border-color: $scores-body-border !important;
+		border-top-style: solid !important;
+		border-top-width: 1px !important;
+
+		&:not(:last-child) {
+			border-right-color: $scores-header-border !important;
+		}
+
+		&:not(:first-child) {
+			border-left-color: $scores-header-border !important;
+		}
+	}
+
+	tr {
+		&:nth-child(odd) {
+			background-color: $scores-odd-bg;
+		}
+	}
+
+	&:nth-child(even) {
+		background-color: $scores-even-bg;
+	}
+
+	td {
+		border-color: $scores-body-border !important;
+	}
+}

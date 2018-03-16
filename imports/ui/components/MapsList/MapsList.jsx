@@ -63,8 +63,8 @@ class MapsList extends Component {
 	render() {
 		const mapLists = this.renderMapLists();
 
-		const easyMapList = this.buildSingleList(mapLists.easyMaps, 'easy', 'Easy');
-		const challengingMapList = this.buildSingleList(mapLists.challengingMaps, 'challenging', 'Challenging');
+		const easyMapList = this.buildSingleList(mapLists.easyMaps, 'easy', 'Easy Boards');
+		const challengingMapList = this.buildSingleList(mapLists.challengingMaps, 'challenging', 'Challenging Boards');
 
 		return (
 			<div className = "maps-list">

@@ -83,7 +83,7 @@
 	}
 
 	span {
-		background-color: $ms-background;
+		background-color: $ms-bg;
 		display: inline-block;
 
 		&:last-child {
@@ -110,7 +110,7 @@
 
 .game-map {
 	@include horizontal-centerer;
-	background: $map-background;
+	background: $map-bg;
 	border: 1px solid $ms-border;
 	border-radius: 12px;
 	clear: both;
@@ -160,7 +160,7 @@
 	}
 
 	span {
-		background: $ms-background;
+		background: $ms-bg;
 		@include ms-gradient($ms-default-1, $ms-default-2);
 		border: 1px solid $ms-border;
 		border-radius: 12px;

@@ -7,8 +7,8 @@ $header-bg: #754e9a;
 $header-color: #fff;
 
 // mapslist
+$maplist-bg: #fff;
 $maplist-border: #0a5472;
-$maplist-background: #fff;
 
 // map view
 $dashboard-bg: rgba(0, 0, 0, .2);
@@ -22,10 +22,10 @@ $ms-yellow: #ffcf50;
 $ms-red: #da5847;
 
 // mapsquare border:
-$ms-border: #0a5472;
-$map-background: #fff;
+$map-bg: #fff;
 $map-border: #666;
-$ms-background: #fff;
+$ms-bg: #fff;
+$ms-border: #0a5472;
 
 // gradients
 // mapsquare
@@ -42,3 +42,9 @@ $ms-match-3: #eccbfc;
 $ms-match-4: #f4e2fc;
 $ms-match-5: #fbf9fc;
 
+// scores table
+$scores-header-bg: #51376b;
+$scores-odd-bg: #fff;
+$scores-even-bg: #dcd3e8;
+$scores-header-border: #fff;
+$scores-body-border: #51376b;
