@@ -76,6 +76,7 @@ class MapSquares extends Component {
 
 		const clicks = typeof storedData.clicks !== 'undefined' ? storedData.clicks : 0;
 		const solved = typeof storedData.solved !== 'undefined' ? storedData.solved : 0;
+		const averageClicks = typeof storedData.averageClicks !== 'undefined' ? storedData.averageClicks : 0;
 		const clickHistory = typeof storedData.clickHistory !== 'undefined' ? storedData.clickHistory : [];
 
 		this.state = {
@@ -94,6 +95,7 @@ class MapSquares extends Component {
 			'patternColumns': map.patternColumns,
 			'clicks': clicks,
 			'solved': solved,
+			'averageClicks': averageClicks,
 			'clickHistory': clickHistory,
 			'localStorageKey': this.props.url,
 		};
@@ -235,10 +237,13 @@ class MapSquares extends Component {
 
 			const clicks = 0;
 			const solved = this.state.solved + 1;
+			const averageClicks = this.calculateAverage(this.state.clickHistory);
+			console.log(`averageClicks ${averageClicks}`);
 
 			storeGameStatus(this.state.localStorageKey, {
 				'clicks': clicks,
 				'solved': solved,
+				'averageClicks': averageClicks,
 				'clickHistory': clickHistory,
 			});
 
@@ -248,6 +253,7 @@ class MapSquares extends Component {
 				'acceptInput': false,
 				'clicks': clicks,
 				'solved': solved,
+				'averageClicks': averageClicks,
 				'clickHistory': clickHistory,
 			});
 
@@ -611,7 +617,8 @@ class MapSquares extends Component {
 		const gameStatus = this.renderGameStatus({
 			'clicks': this.state.clicks,
 			'solved': this.state.solved,
-			'averageClicks': this.calculateAverage(this.state.clickHistory),
+			// 'averageClicks': this.calculateAverage(this.state.clickHistory),
+			'averageClicks': this.state.averageClicks,
 		});
 		const newPatternButton = this.renderNewPatternButton();
 
