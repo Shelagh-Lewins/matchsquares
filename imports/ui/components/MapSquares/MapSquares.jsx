@@ -102,13 +102,19 @@ class MapSquares extends Component {
 	}
 
 	componentWillMount() {
-		// do some stuff before component mounts
 		this.generateMap();
 		this.generatePattern();
 	}
 
 	componentDidMount() {
-		// do some stuff after component mounts
+		$('body').addClass('game');
+		$('main').css('background', 'url(' + '/backgrounds/bg_01.jpg' + ') transparent no-repeat 0 0');
+		$('main').css('background-size', 'cover');
+	}
+
+	componentWillUnmount() {
+		$('body').removeClass('game');
+		$('main').css('background', 'none');
 	}
 
 	newPatternClicked() {

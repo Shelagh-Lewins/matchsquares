@@ -1,11 +1,6 @@
 @import '../../stylesheets/colors';
 @import '../../stylesheets/mixins';
 
-.game-holder {
-	position: relative;
-	width: 100%;
-}
-
 // pattern
 .pattern-holder {
 	margin: 8px 0 0;
@@ -176,28 +171,4 @@
 	}
 }
 
-.dashboard {
-	background-color: $dashboard-bg;
-	margin: 0 -15px;
-	overflow: hidden;
-	padding: 8px 0;
-}
-
-.game-status {
-	@include horizontal-centerer;
-	float: left;
-	font-size: 16px;
-	font-weight: bold;
-
-	span {
-		margin: 0 10px;
-	}
-}
-
-.new-pattern {
-	@include horizontal-centerer;
-	clear: both;
-	float: left;
-	margin: 8px 0 0;
-}
 
