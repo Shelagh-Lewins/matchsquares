@@ -108,7 +108,21 @@ class MapSquares extends Component {
 
 	componentDidMount() {
 		$('body').addClass('game');
-		$('main').css('background', 'url(' + '/backgrounds/bg_01.jpg' + ') transparent no-repeat 0 0');
+
+		// choose a random background image
+		const numberOfImages = 41;
+		const imageNo = Math.floor(Random.fraction() * numberOfImages);
+
+		let url = '/backgrounds/bg_';
+		if (imageNo.toString().length < 2) {
+			url += '0';
+		}
+
+		url = url + imageNo.toString() + '.jpg';
+
+		console.log(`url ${url}`);
+
+		$('main').css('background', 'url(' + url + ') transparent no-repeat 0 0');
 		$('main').css('background-size', 'cover');
 	}
 
