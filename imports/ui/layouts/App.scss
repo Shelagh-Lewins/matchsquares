@@ -19,7 +19,7 @@ main {
 }
 
 .container {
-	width: auto;
+	// width: auto;
 }
 
 .inner-tube {
@@ -53,6 +53,10 @@ main {
 }
 
 @include media-breakpoint(md) {
+	.container {
+		width: 750px;
+	}
+
 	.inner-tube {
 		background-color: transparent;
 	}

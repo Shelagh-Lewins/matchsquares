@@ -111,7 +111,7 @@ class MapSquares extends Component {
 
 		// choose a random background image
 		const numberOfImages = 40;
-		const imageNo = Math.floor(Random.fraction() * numberOfImages);
+		const imageNo = Math.floor(Random.fraction() * numberOfImages) + 1;
 
 		let url = '/backgrounds/bg_';
 		if (imageNo.toString().length < 2) {
