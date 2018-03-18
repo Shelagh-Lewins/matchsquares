@@ -23,17 +23,19 @@ class MapsList extends Component {
 
 		return (
 			<Col xs={12} sm={6}>
-				<h3>{name}</h3>
-				<ul className={`${className}`}>
-					{
-						list.map( (size) => <MapLink
-							key={'map' + size.name}
-							mapName={size.name}
-							url={size.url}
-							history={history}
-						/> )
-					}
-				</ul>
+				<div className='box'>
+					<h3>{name}</h3>
+					<ul className={`${className}`}>
+						{
+							list.map( (size) => <MapLink
+								key={'map' + size.name}
+								mapName={size.name}
+								url={size.url}
+								history={history}
+							/> )
+						}
+					</ul>
+				</div>
 			</Col>
 		);
 	}
