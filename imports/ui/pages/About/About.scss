@@ -1,0 +1,7 @@
+@import '../../stylesheets/mixins';
+
+@include media-breakpoint(md) {
+	main {
+		background-position: center center !important;
+	}
+}

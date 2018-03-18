@@ -48,6 +48,10 @@ main {
 	}
 }
 
+.columns {
+	padding: 0 15px;
+}
+
 @include media-breakpoint(md) {
 	.inner-tube {
 		background-color: transparent;

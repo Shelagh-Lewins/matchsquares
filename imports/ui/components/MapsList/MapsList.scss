@@ -1,7 +1,7 @@
 @import '../../stylesheets/colors';
 @import '../../stylesheets/mixins';
 
-.maps-list {
+.columns {
 	padding: 0 15px;
 
 	ul {
@@ -34,6 +34,10 @@
 	}
 
 	@include media-breakpoint(md) {
+		main {
+			background-position: center center !important;
+		}
+
 		a {
 			background-color: transparent;
 			border: 0;

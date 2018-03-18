@@ -10,7 +10,7 @@ import './Scores.scss';
 class About extends Component {
 	componentDidMount() {
 		$('body').addClass('scores');
-		$('main').css('background', 'url(/backgrounds/fort.jpg) transparent no-repeat 0 0');
+		$('main').css('background', 'url(/backgrounds/fort.jpg) transparent no-repeat center');
 		$('main').css('background-size', 'cover');
 	}
 
@@ -109,7 +109,7 @@ class About extends Component {
 						</Col>
 					</Row>
 				</div>
-				<div className = "score-tables">
+				<div className = "columns">
 					{scores}
 				</div>
 			</div>

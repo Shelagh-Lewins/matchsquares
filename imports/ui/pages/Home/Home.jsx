@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-import './Home.scss';
-
 // component that lists maps
 import MapsList from '../../components/MapsList/MapsList.jsx';
 import DonateButton from '../../components/DonateButton/DonateButton.jsx';
@@ -10,7 +8,7 @@ import DonateButton from '../../components/DonateButton/DonateButton.jsx';
 class Home extends Component {
 	componentDidMount() {
 		$('body').addClass('home');
-		$('main').css('background', 'url(/backgrounds/sheep.jpg) transparent no-repeat 0 0');
+		$('main').css('background', 'url(/backgrounds/sheep.jpg) transparent no-repeat center right');
 		$('main').css('background-size', 'cover');
 	}
 

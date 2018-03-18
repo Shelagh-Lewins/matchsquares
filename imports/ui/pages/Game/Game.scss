@@ -1,14 +1,6 @@
 @import '../../stylesheets/colors';
 @import '../../stylesheets/mixins';
 
-// .game {
-
-// }
-
-// .container-fluid {
-// min-height: 100%;
-// }
-
 .game-holder {
 	position: relative;
 	width: 100%;
@@ -17,7 +9,7 @@
 .dashboard {
 	background-color: $dashboard-bg;
 	color: $dashboard-color;
-	margin: 0 -15px;
+	margin: -10px -15px 0;
 	overflow: hidden;
 	padding: 8px 0;
 }

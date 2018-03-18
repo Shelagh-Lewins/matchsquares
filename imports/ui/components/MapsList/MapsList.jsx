@@ -69,7 +69,7 @@ class MapsList extends Component {
 		const challengingMapList = this.buildSingleList(mapLists.challengingMaps, 'challenging', 'Challenging boards');
 
 		return (
-			<div className = "maps-list">
+			<div className = "columns">
 				<Row>
 					{easyMapList}
 					{challengingMapList}

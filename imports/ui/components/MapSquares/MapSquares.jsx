@@ -120,7 +120,7 @@ class MapSquares extends Component {
 
 		url = url + imageNo.toString() + '.jpg';
 
-		$('main').css('background', 'url(' + url + ') transparent no-repeat 0 0');
+		$('main').css('background', 'url(' + url + ') transparent no-repeat center');
 		$('main').css('background-size', 'cover');
 	}
 
