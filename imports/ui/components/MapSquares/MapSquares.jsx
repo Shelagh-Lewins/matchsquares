@@ -110,7 +110,7 @@ class MapSquares extends Component {
 		$('body').addClass('game');
 
 		// choose a random background image
-		const numberOfImages = 41;
+		const numberOfImages = 40;
 		const imageNo = Math.floor(Random.fraction() * numberOfImages);
 
 		let url = '/backgrounds/bg_';
@@ -126,7 +126,6 @@ class MapSquares extends Component {
 
 	componentWillUnmount() {
 		$('body').removeClass('game');
-		$('main').css('background', 'none');
 	}
 
 	newPatternClicked() {

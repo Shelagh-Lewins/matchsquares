@@ -1,25 +1,13 @@
 @import '../../stylesheets/colors';
 @import '../../stylesheets/mixins';
 
-.game {
-	.primary-layout {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
+// .game {
 
-	main {
-		flex: 1;
-	}
+// }
 
-	.container {
-		width: auto;
-	}
-}
-
-.container-fluid {
-	min-height: 100%;
-}
+// .container-fluid {
+// min-height: 100%;
+// }
 
 .game-holder {
 	position: relative;

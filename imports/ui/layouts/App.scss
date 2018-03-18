@@ -1,37 +1,61 @@
 @import '../stylesheets/colors';
+@import '../stylesheets/mixins';
 
 body {
 	background: $body-bg;
 	color: $body-color;
 }
 
+.primary-layout {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
 main {
+	flex: 1;
 	margin: 0;
-	padding: 0 0 20px;
+	padding: 10px 0 20px;
+}
+
+.container {
+	width: auto;
+}
+
+.inner-tube {
+	background-color: $box-bg;
+	border-radius: 8px;
 }
 
 .box {
-	background: $box-bg;
-	border-radius: 8px;
+	background: transparent;
 	color: $box-color;
-	margin: 15px 15px 0;
-	padding: 15px;
+	margin: 0 15px;
+	padding: 0 15px;
 
 	h1 {
 		margin: 10px 0;
 	}
 
-	h3 {
+	h2 {
 		margin: 10px 0;
 	}
 }
 
 .row {
 	.box {
+		margin: 15px 0 0;
+	}
+}
+
+@include media-breakpoint(md) {
+	.inner-tube {
+		background-color: transparent;
+	}
+
+	.box {
 		background: $box-bg;
 		border-radius: 8px;
-		color: $box-color;
-		margin: 15px 0 0;
-		// padding: 15px;
+		padding: 5px 15px;
 	}
 }

@@ -24,7 +24,7 @@ class MapsList extends Component {
 		return (
 			<Col xs={12} sm={6}>
 				<div className='box'>
-					<h3>{name}</h3>
+					<h2>{name}</h2>
 					<ul className={`${className}`}>
 						{
 							list.map( (size) => <MapLink
@@ -65,8 +65,8 @@ class MapsList extends Component {
 	render() {
 		const mapLists = this.renderMapLists();
 
-		const easyMapList = this.buildSingleList(mapLists.easyMaps, 'easy', 'Easy Boards');
-		const challengingMapList = this.buildSingleList(mapLists.challengingMaps, 'challenging', 'Challenging Boards');
+		const easyMapList = this.buildSingleList(mapLists.easyMaps, 'easy', 'Easy boards');
+		const challengingMapList = this.buildSingleList(mapLists.challengingMaps, 'challenging', 'Challenging boards');
 
 		return (
 			<div className = "maps-list">

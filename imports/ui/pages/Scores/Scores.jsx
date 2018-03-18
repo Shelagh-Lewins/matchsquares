@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Row, Col } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -7,6 +8,16 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Scores.scss';
 
 class About extends Component {
+	componentDidMount() {
+		$('body').addClass('scores');
+		$('main').css('background', 'url(/backgrounds/fort.jpg) transparent no-repeat 0 0');
+		$('main').css('background-size', 'cover');
+	}
+
+	componentWillUnmount() {
+		$('body').removeClass('scores');
+	}
+
 	renderScores() {
 		// split the maps into easy and challenging
 		const easyMaps = [];
@@ -60,31 +71,47 @@ class About extends Component {
 		}];
 
 		return (
-			<div>
-				<h2>Easy</h2>
-				<BootstrapTable
-					keyField='url'
-					data={ data.easyMaps }
-					columns={ columns }
-					rowStyle={ rowStyle }
-				/>
-				<h2>Challenging</h2>
-				<BootstrapTable
-					keyField='url'
-					data={ data.challengingMaps }
-					columns={ columns }
-					rowStyle={ rowStyle }
-				/>
-			</div>
+			<Row>
+				<Col xs={12} sm={6}>
+					<div className='box'>
+						<h2>Easy boards</h2>
+						<BootstrapTable
+							keyField='url'
+							data={ data.easyMaps }
+							columns={ columns }
+							rowStyle={ rowStyle }
+						/>
+					</div>
+				</Col>
+				<Col xs={12} sm={6}>
+					<div className='box'>
+						<h2>Challenging boards</h2>
+						<BootstrapTable
+							keyField='url'
+							data={ data.challengingMaps }
+							columns={ columns }
+							rowStyle={ rowStyle }
+						/>
+					</div>
+				</Col>
+			</Row>
 		);
 	}
 
 	render() {
 		const scores = this.renderScores();
 		return (
-			<div>
-				<h1>Scores</h1>
-				{scores}
+			<div className="inner-tube">
+				<div className="box">
+					<Row>
+						<Col xs={12}>
+							<h1>Scores</h1>
+						</Col>
+					</Row>
+				</div>
+				<div className = "score-tables">
+					{scores}
+				</div>
 			</div>
 		);
 	}

@@ -10,6 +10,8 @@ import DonateButton from '../../components/DonateButton/DonateButton.jsx';
 class Home extends Component {
 	componentDidMount() {
 		$('body').addClass('home');
+		$('main').css('background', 'url(/backgrounds/sheep.jpg) transparent no-repeat 0 0');
+		$('main').css('background-size', 'cover');
 	}
 
 	componentWillUnmount() {
@@ -18,7 +20,7 @@ class Home extends Component {
 
 	render() {
 		return (
-			<div className="Home">
+			<div className="inner-tube">
 				<div className="box">
 					<Row>
 						<Col xs={12}>
