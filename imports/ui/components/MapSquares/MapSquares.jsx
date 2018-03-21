@@ -53,6 +53,23 @@ function MapSquare(props) {
 	);
 }
 
+function PatternTypeSelector(props) {
+	let isGenerated = '';
+	let isRandom = '';
+	if (props.patternType === 'generated') {
+		isGenerated = 'selected';
+	} else {
+		isRandom = 'selected';
+	}
+
+	return (
+		<ul className='pattern-type'>
+			<li className={`generated ${isGenerated}`} onClick={props.handleClick}>Generated</li>
+			<li className={`random ${isRandom}`} onClick={props.handleClick}>Random</li>
+		</ul>
+	);
+}
+
 function NewPatternButton(props) {
 	return (
 		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >Give me a new pattern</Button>
@@ -75,6 +92,7 @@ class MapSquares extends Component {
 
 		const storedData = localStorage.getItem(this.props.url) ?  JSON.parse(localStorage.getItem(this.props.url)) : {};
 
+		const patternType = typeof storedData.patternType !== 'undefined' ? storedData.patternType : 'generated';
 		const clicks = typeof storedData.clicks !== 'undefined' ? storedData.clicks : 0;
 		const solved = typeof storedData.solved !== 'undefined' ? storedData.solved : 0;
 		const averageClicks = typeof storedData.averageClicks !== 'undefined' ? storedData.averageClicks : 0;
@@ -94,12 +112,15 @@ class MapSquares extends Component {
 			'mapColumns': map.mapColumns,
 			'patternRows': map.patternRows,
 			'patternColumns': map.patternColumns,
+			'patternType': patternType,
 			'clicks': clicks,
 			'solved': solved,
 			'averageClicks': averageClicks,
 			'clickHistory': clickHistory,
 			'localStorageKey': this.props.url,
 		};
+
+		this.props.settings = {};
 	}
 
 	componentWillMount() {
@@ -133,6 +154,18 @@ class MapSquares extends Component {
 		this.generatePattern();
 	}
 
+	PatternTypeSelectorClicked(e) {
+		toastr.options.closeButton = true;
+		toastr.options.positionClass = 'toast-bottom-center';
+		if ($(e.target).hasClass('generated')) {
+			this.setState({'patternType': 'generated'});
+			toastr.info('Generated patterns can always be solved');
+		} else if ($(e.target).hasClass('random')) {
+			this.setState({'patternType': 'random'});
+			toastr.info('Random patterns may or may not have a solution');
+		}
+	}
+
 	deleteGameStatusButtonClicked() {
 		const clicks = 0;
 		const solved = 0;
@@ -161,6 +194,7 @@ class MapSquares extends Component {
 			'mapColumns': this.state.mapColumns,
 			'patternRows': this.state.patternRows,
 			'patternColumns': this.state.patternColumns,
+			'patternType': this.state.patternType,
 		}).then((data) => {
 			this.setState( {
 				'generatingPattern': false,
@@ -256,7 +290,6 @@ class MapSquares extends Component {
 			const clicks = 0;
 			const solved = this.state.solved + 1;
 			const averageClicks = this.calculateAverage(this.state.clickHistory);
-			console.log(`averageClicks ${averageClicks}`);
 
 			storeGameStatus(this.state.localStorageKey, {
 				'clicks': clicks,
@@ -506,16 +539,6 @@ class MapSquares extends Component {
 		);
 	}
 
-	renderNewPatternButton() {
-		return (
-			<div className="new-pattern">
-				<NewPatternButton
-					handleClick={this.newPatternClicked.bind(this)}
-				/>
-			</div>
-		);
-	}
-
 	renderPattern(params) {
 		if (params.generatingPattern) {
 			return (
@@ -564,6 +587,20 @@ class MapSquares extends Component {
 						handleClick={this.deleteGameStatusButtonClicked.bind(this)}
 					/>
 				</span>
+			</div>
+		);
+	}
+
+	renderGameControls() {
+		return (
+			<div className="game-controls">
+				<PatternTypeSelector
+					patternType={this.state.patternType}
+					handleClick={this.PatternTypeSelectorClicked.bind(this)}
+				/>
+				<NewPatternButton
+					handleClick={this.newPatternClicked.bind(this)}
+				/>
 			</div>
 		);
 	}
@@ -645,13 +682,13 @@ class MapSquares extends Component {
 			'solved': this.state.solved,
 			'averageClicks': this.state.averageClicks,
 		});
-		const newPatternButton = this.renderNewPatternButton();
+		const gameControls = this.renderGameControls();
 
 		return (
 			<div className="game-holder">
 				<div className="dashboard">
 					{gameStatus}
-					{newPatternButton}
+					{gameControls}
 				</div>
 
 				<div className='pattern-holder'>

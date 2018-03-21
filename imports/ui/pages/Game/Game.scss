@@ -33,9 +33,22 @@
 	}
 }
 
-.new-pattern {
+.game-controls {
 	@include horizontal-centerer;
 	clear: both;
 	float: left;
 	margin: 8px 0 0;
+}
+
+.pattern-type {
+	list-style-type: none;
+	float: left;
+
+	li {
+		float: left;
+
+		&.selected {
+			border: 1px solid white;
+		}
+	}
 }

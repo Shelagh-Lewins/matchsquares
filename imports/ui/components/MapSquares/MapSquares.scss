@@ -18,7 +18,11 @@
 		margin-bottom: 8px;
 
 		.status-text {
-			font-size: 24px;
+			background: $status-bg;
+			border-radius: 8px;
+			color: $status-color;
+			font-size: 20px;
+			padding: 8px 0;
 			position: absolute;
 			text-align: center;
 			top: 30px;

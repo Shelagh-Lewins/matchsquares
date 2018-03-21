@@ -11,7 +11,10 @@ Meteor.methods({
 			'mapColumns': Number,
 			'patternRows': Number,
 			'patternColumns': Number,
+			'patternType': String,
 		});
+
+		console.log(`patternType ${params.patternType}`);
 
 		let pattern = [];
 
