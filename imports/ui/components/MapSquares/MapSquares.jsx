@@ -42,6 +42,7 @@ function MapSquare(props) {
 				'top': props.slideDistance,
 				'height': Meteor.settings.public.mapSquareHeight,
 				'width': Meteor.settings.public.mapSquareWidth,
+				'borderWidth': Meteor.settings.public.mapBorderWidth,
 				'transition': props.slideTransition,
 			}}>
 				<svg viewBox="0 0 100 100">
@@ -529,9 +530,17 @@ class MapSquares extends Component {
 	}
 
 	renderMap(mapSquares) {
+		// set width so rows cannot wrap on small screens
+		let width = Meteor.settings.public.mapSquareWidth + 2 * Meteor.settings.public.mapSquareHMargin; // size of a mapsquare
+		width *= this.state.mapColumns; // number of squares in a row
+		width += 2 * Meteor.settings.public.mapPadding;
+		width += 2 * Meteor.settings.public.mapBorderWidth;
+
 		return (
 			<div className="map-holder">
-				<ul className='game-map'>
+				<ul className='game-map' style={{
+					'width': width,
+				}}>
 					{mapSquares.map( (maprow, index) => this.renderMapRow(maprow, index))}
 				</ul>
 			</div>
@@ -634,7 +643,6 @@ class MapSquares extends Component {
 		const gameStatus = this.renderGameStatus({
 			'clicks': this.state.clicks,
 			'solved': this.state.solved,
-			// 'averageClicks': this.calculateAverage(this.state.clickHistory),
 			'averageClicks': this.state.averageClicks,
 		});
 		const newPatternButton = this.renderNewPatternButton();
