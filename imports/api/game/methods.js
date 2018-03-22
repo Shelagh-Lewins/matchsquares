@@ -16,6 +16,12 @@ Meteor.methods({
 
 		console.log(`patternType ${params.patternType}`);
 
+		// use pattern type
+		// only show pattern type for Challenging
+		// find pattern ID
+		// show pattern ID
+		// enter pattern ID and generate pattern from it
+
 		let pattern = [];
 
 		if (params.mapRows > params.patternRows || params.mapColumns > params.patternColumns) {

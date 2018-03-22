@@ -56,16 +56,21 @@ function MapSquare(props) {
 function PatternTypeSelector(props) {
 	let isGenerated = '';
 	let isRandom = '';
+	let isId = '';
+
 	if (props.patternType === 'generated') {
 		isGenerated = 'selected';
-	} else {
+	} else if (props.patternType === 'random') {
 		isRandom = 'selected';
+	} else if (props.patternType === 'id') {
+		isId = 'selected';
 	}
 
 	return (
 		<ul className='pattern-type'>
 			<li className={`generated ${isGenerated}`} onClick={props.handleClick}>Generated</li>
 			<li className={`random ${isRandom}`} onClick={props.handleClick}>Random</li>
+			<li className={`id ${isId}`} onClick={props.handleClick}>ID</li>
 		</ul>
 	);
 }
@@ -157,12 +162,16 @@ class MapSquares extends Component {
 	PatternTypeSelectorClicked(e) {
 		toastr.options.closeButton = true;
 		toastr.options.positionClass = 'toast-bottom-center';
+
 		if ($(e.target).hasClass('generated')) {
 			this.setState({'patternType': 'generated'});
 			toastr.info('Generated patterns can always be solved');
 		} else if ($(e.target).hasClass('random')) {
 			this.setState({'patternType': 'random'});
 			toastr.info('Random patterns may or may not have a solution');
+		} else if ($(e.target).hasClass('id')) {
+			this.setState({'patternType': 'id'});
+			toastr.info('Enter an ID to generate a specific pattern');
 		}
 	}
 
@@ -592,12 +601,17 @@ class MapSquares extends Component {
 	}
 
 	renderGameControls() {
+		// only Challenging maps have a choice of pattern type
+		const isChallenging = this.state.patternRows === this.state.mapRows && this.state.patternColumns === this.state.mapColumns;
+
 		return (
 			<div className="game-controls">
+				{isChallenging &&
 				<PatternTypeSelector
 					patternType={this.state.patternType}
 					handleClick={this.PatternTypeSelectorClicked.bind(this)}
 				/>
+				}
 				<NewPatternButton
 					handleClick={this.newPatternClicked.bind(this)}
 				/>
