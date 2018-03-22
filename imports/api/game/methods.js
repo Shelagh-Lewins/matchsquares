@@ -13,22 +13,38 @@ Meteor.methods({
 			'patternRows': Number,
 			'patternColumns': Number,
 			'patternType': String,
+			'id': String,
 		});
 
 		console.log(`patternType ${params.patternType}`);
+		console.log(`id ${params.id}`);
 
-		// use pattern type
+		let invalidId = false;
+		if (params.patternType === 'id') {
+			if (params.id === '' || params.id === 'NaN') {
+				invalidId = true;
+			}
+		}
 
-		// find pattern ID
-		// show pattern ID
+		if (invalidId) {
+			throw new Meteor.Error('generate-pattern-failed', 'no id provided');
+		}
+
+		// check length of string against pattern rows
+
+		// don't try to generate id pattern if id is empty string
 		// enter pattern ID and generate pattern from it
 
+		// static hint text instead of notifications
+
 		let pattern = [];
+		let id = '';
+		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 		// let id = '';
 
 		if (params.patternType === 'random') {
 			// choose pattern square colours at random
-			const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+			// const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 
 			for (let i = 0; i < params.patternRows; i++) {
 				pattern[i] = [];
@@ -41,9 +57,10 @@ Meteor.methods({
 					};
 				}
 			}
+			id = Meteor.call('game.findPatternId', pattern);
 		} else if (params.patternType === 'generated') {
 			// start with a solid ground the size of the map
-			const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+			// const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 			const colorNumber = Math.floor(Random.fraction() * colors.length);
 
 			for (let i = 0; i < params.patternRows; i++) {
@@ -77,9 +94,42 @@ Meteor.methods({
 					'mapColumns': params.patternColumns,
 				});
 			}
+			id = Meteor.call('game.findPatternId', pattern);
+		} else if (params.patternType === 'id') {
+			// create the pattern from the id
+			// convert the id back to a base 4 string
+
+			// TODO add leading 0 if necessary to make string long enough
+
+			console.log(`id ${params.id}`);
+			const tempId = baseConvert(params.id, 36, 4).split('');
+			console.log(`tempId ${tempId}`);
+
+			for (let i = 0; i < params.patternRows; i++) {
+				let row = [];
+
+				for (let j = 0; j < params.patternColumns; j++) {
+					let square = {
+						'color': colors[tempId.shift()],
+						'row': i,
+						'column': j,
+					};
+					console.log(`color ${square.color}`);
+
+					if (typeof square.color === 'undefined') {
+						throw new Meteor.Error('generate-pattern-failed', 'id did not have enough digits');
+					}
+
+					row.push(square);
+				}
+
+				pattern.push(row);
+			}
+
+			id = params.id;
 		}
 
-		const id = Meteor.call('game.findPatternId', pattern);
+		// const id = Meteor.call('game.findPatternId', pattern);
 
 		return { pattern, id };
 	},
@@ -191,9 +241,11 @@ Meteor.methods({
 				id += colors.indexOf(patternCell.color);
 			});
 		});
-
+console.log(`id base 4 ${id}`);
 		// now convert to a base 36 number
 		id = baseConvert(id, 4, 36);
+
+		console.log(`id base 36 ${id}`);
 
 		return id;
 	},

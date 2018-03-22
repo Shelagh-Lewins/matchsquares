@@ -38,11 +38,16 @@
 	clear: both;
 	float: left;
 	margin: 8px 0 0;
+
+	input {
+		background: $input-bg;
+		color: $input-color;
+	}
 }
 
 .pattern-type {
-	list-style-type: none;
 	float: left;
+	list-style-type: none;
 
 	li {
 		float: left;

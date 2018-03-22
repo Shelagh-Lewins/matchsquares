@@ -70,7 +70,20 @@ function PatternTypeSelector(props) {
 		<ul className='pattern-type'>
 			<li className={`generated ${isGenerated}`} onClick={props.handleClick}>Generated</li>
 			<li className={`random ${isRandom}`} onClick={props.handleClick}>Random</li>
-			<li className={`id ${isId}`} onClick={props.handleClick}>id: {props.id}</li>
+			<li className={`id ${isId}`} onClick={props.handleClick}>ID:
+			<input
+				className='id-input'
+				type='text'
+				name='id'
+				value={props.id}
+				maxLength={props.maxLength}
+				style={{
+					'width': props.inputWidth,
+				}}
+				onChange={props.handleChange}
+				disabled={props.patternType === 'id' ? '' : 'disabled'}
+			/>
+			</li>
 		</ul>
 	);
 }
@@ -122,6 +135,7 @@ class MapSquares extends Component {
 			'patternColumns': map.patternColumns,
 			'isChallenging': isChallenging,
 			'patternType': patternType,
+			'id': '',
 			'clicks': clicks,
 			'solved': solved,
 			'averageClicks': averageClicks,
@@ -133,6 +147,9 @@ class MapSquares extends Component {
 	}
 
 	componentWillMount() {
+		toastr.options.closeButton = true;
+		toastr.options.positionClass = 'toast-bottom-center';
+
 		this.generateMap();
 		this.generatePattern();
 	}
@@ -163,10 +180,7 @@ class MapSquares extends Component {
 		this.generatePattern();
 	}
 
-	PatternTypeSelectorClicked(e) {
-		toastr.options.closeButton = true;
-		toastr.options.positionClass = 'toast-bottom-center';
-
+	patternTypeSelectorClicked(e) {
 		let patternType = '';
 		let info = '';
 
@@ -176,7 +190,7 @@ class MapSquares extends Component {
 		} else if ($(e.target).hasClass('random')) {
 			patternType = 'random';
 			info = 'Random patterns may or may not have a solution';
-		} else if ($(e.target).hasClass('id')) {
+		} else if ($(e.target).hasClass('id') || $(e.target).hasClass('id-input')) {
 			patternType = 'id';
 			info = 'Enter an ID to generate a specific pattern';
 		}
@@ -185,6 +199,12 @@ class MapSquares extends Component {
 		this.setState({'patternType': patternType});
 		storeGameStatus(this.state.localStorageKey, {
 			'patternType': patternType,
+		});
+	}
+
+	idChanged(e) {
+		this.setState({
+			'id': e.target.value,
 		});
 	}
 
@@ -217,6 +237,7 @@ class MapSquares extends Component {
 			'patternRows': this.state.patternRows,
 			'patternColumns': this.state.patternColumns,
 			'patternType': this.state.patternType,
+			'id': this.state.id,
 		}).then((data) => {
 			this.setState( {
 				'generatingPattern': false,
@@ -229,6 +250,12 @@ class MapSquares extends Component {
 		},
 		(err) => {
 			toastr.error(`Error performing generating pattern: ${err}`);
+			this.setState( {
+				'generatingPattern': false,
+				'match': {},
+				'checkMatch': true,
+				'acceptInput': true,
+			} );
 		}
 		);
 	}
@@ -615,13 +642,39 @@ class MapSquares extends Component {
 	}
 
 	renderGameControls() {
+		let inputWidth = '';
+		let maxLength = 0;
+
+		switch (this.state.patternRows) {
+		case 3:
+			inputWidth = '3em';
+			maxLength = 4;
+			break;
+
+		case 4:
+			inputWidth = '5em';
+			maxLength = 6;
+			break;
+
+		case 5:
+			inputWidth = '7em';
+			maxLength = 10;
+			break;
+
+		default:
+			break;
+		}
+
 		return (
 			<div className="game-controls">
 				{this.state.isChallenging &&
 				<PatternTypeSelector
 					patternType={this.state.patternType}
 					id={this.state.id}
-					handleClick={this.PatternTypeSelectorClicked.bind(this)}
+					handleChange={this.idChanged.bind(this)}
+					handleClick={this.patternTypeSelectorClicked.bind(this)}
+					inputWidth={inputWidth}
+					maxLength={maxLength}
 				/>
 				}
 				<NewPatternButton
