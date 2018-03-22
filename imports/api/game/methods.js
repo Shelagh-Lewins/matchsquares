@@ -3,6 +3,7 @@ import { Random } from 'meteor/random';
 import { check, Match, Maybe } from 'meteor/check'; // eslint-disable-line no-unused-vars
 // Maybe is used but in a form eslint doesn't recognise
 import rateLimit from '../../modules/rate-limit';
+import baseConvert from '../../modules/base-convert';
 
 Meteor.methods({
 	'game.generatePattern': function RandomMove(params) {
@@ -17,15 +18,16 @@ Meteor.methods({
 		console.log(`patternType ${params.patternType}`);
 
 		// use pattern type
-		// only show pattern type for Challenging
+
 		// find pattern ID
 		// show pattern ID
 		// enter pattern ID and generate pattern from it
 
 		let pattern = [];
+		// let id = '';
 
-		if (params.mapRows > params.patternRows || params.mapColumns > params.patternColumns) {
-			// the map is wider than the pattern, so any pattern is solvable.
+		if (params.patternType === 'random') {
+			// choose pattern square colours at random
 			const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 
 			for (let i = 0; i < params.patternRows; i++) {
@@ -39,8 +41,7 @@ Meteor.methods({
 					};
 				}
 			}
-		} else {
-			// the pattern is the same size as the map, so must ensure pattern is solvable
+		} else if (params.patternType === 'generated') {
 			// start with a solid ground the size of the map
 			const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 			const colorNumber = Math.floor(Random.fraction() * colors.length);
@@ -78,7 +79,9 @@ Meteor.methods({
 			}
 		}
 
-		return pattern;
+		const id = Meteor.call('game.findPatternId', pattern);
+
+		return { pattern, id };
 	},
 	'game.mapSquareClicked': function MapSquareClicked(params) {
 		// check adjacent squares
@@ -173,6 +176,26 @@ Meteor.methods({
 		});
 
 		return mapSquares; // eslint-disable-line consistent-return
+	},
+	'game.findPatternId': function FindPatternId(pattern) {
+		// encode the pattern color data as a base 36 number
+		// 0-9 + lower case alphabet
+		// represented by a string
+
+		// first create a base 4 representation (4 colours)
+		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
+		let id = '';
+
+		pattern.map((patternRow) => {
+			patternRow.map((patternCell) => {
+				id += colors.indexOf(patternCell.color);
+			});
+		});
+
+		// now convert to a base 36 number
+		id = baseConvert(id, 4, 36);
+
+		return id;
 	},
 });
 

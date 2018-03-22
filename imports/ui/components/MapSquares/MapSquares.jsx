@@ -70,14 +70,14 @@ function PatternTypeSelector(props) {
 		<ul className='pattern-type'>
 			<li className={`generated ${isGenerated}`} onClick={props.handleClick}>Generated</li>
 			<li className={`random ${isRandom}`} onClick={props.handleClick}>Random</li>
-			<li className={`id ${isId}`} onClick={props.handleClick}>ID</li>
+			<li className={`id ${isId}`} onClick={props.handleClick}>id: {props.id}</li>
 		</ul>
 	);
 }
 
 function NewPatternButton(props) {
 	return (
-		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >Give me a new pattern</Button>
+		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >New pattern</Button>
 	);
 }
 
@@ -97,7 +97,10 @@ class MapSquares extends Component {
 
 		const storedData = localStorage.getItem(this.props.url) ?  JSON.parse(localStorage.getItem(this.props.url)) : {};
 
-		const patternType = typeof storedData.patternType !== 'undefined' ? storedData.patternType : 'generated';
+		const isChallenging = map.patternRows === map.mapRows && map.patternColumns === map.mapColumns; // map and pattern same size
+		const defaultType = isChallenging ? 'generated' : 'random';
+		const patternType = typeof storedData.patternType !== 'undefined' ? storedData.patternType : defaultType;
+
 		const clicks = typeof storedData.clicks !== 'undefined' ? storedData.clicks : 0;
 		const solved = typeof storedData.solved !== 'undefined' ? storedData.solved : 0;
 		const averageClicks = typeof storedData.averageClicks !== 'undefined' ? storedData.averageClicks : 0;
@@ -117,6 +120,7 @@ class MapSquares extends Component {
 			'mapColumns': map.mapColumns,
 			'patternRows': map.patternRows,
 			'patternColumns': map.patternColumns,
+			'isChallenging': isChallenging,
 			'patternType': patternType,
 			'clicks': clicks,
 			'solved': solved,
@@ -163,16 +167,25 @@ class MapSquares extends Component {
 		toastr.options.closeButton = true;
 		toastr.options.positionClass = 'toast-bottom-center';
 
+		let patternType = '';
+		let info = '';
+
 		if ($(e.target).hasClass('generated')) {
-			this.setState({'patternType': 'generated'});
-			toastr.info('Generated patterns can always be solved');
+			patternType = 'generated';
+			info = 'Generated patterns can always be solved';
 		} else if ($(e.target).hasClass('random')) {
-			this.setState({'patternType': 'random'});
-			toastr.info('Random patterns may or may not have a solution');
+			patternType = 'random';
+			info = 'Random patterns may or may not have a solution';
 		} else if ($(e.target).hasClass('id')) {
-			this.setState({'patternType': 'id'});
-			toastr.info('Enter an ID to generate a specific pattern');
+			patternType = 'id';
+			info = 'Enter an ID to generate a specific pattern';
 		}
+
+		toastr.info(info);
+		this.setState({'patternType': patternType});
+		storeGameStatus(this.state.localStorageKey, {
+			'patternType': patternType,
+		});
 	}
 
 	deleteGameStatusButtonClicked() {
@@ -207,7 +220,8 @@ class MapSquares extends Component {
 		}).then((data) => {
 			this.setState( {
 				'generatingPattern': false,
-				'pattern': data,
+				'pattern': data.pattern,
+				'id': data.id,
 				'match': {},
 				'checkMatch': true,
 				'acceptInput': true,
@@ -601,14 +615,12 @@ class MapSquares extends Component {
 	}
 
 	renderGameControls() {
-		// only Challenging maps have a choice of pattern type
-		const isChallenging = this.state.patternRows === this.state.mapRows && this.state.patternColumns === this.state.mapColumns;
-
 		return (
 			<div className="game-controls">
-				{isChallenging &&
+				{this.state.isChallenging &&
 				<PatternTypeSelector
 					patternType={this.state.patternType}
+					id={this.state.id}
 					handleClick={this.PatternTypeSelectorClicked.bind(this)}
 				/>
 				}
