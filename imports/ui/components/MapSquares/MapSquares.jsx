@@ -76,15 +76,41 @@ function PatternTypeSelector(props) {
 				type='text'
 				name='id'
 				value={props.id}
-				maxLength={props.maxLength}
+				maxLength={Meteor.settings.public.idLengths[props.patternRows]}
 				style={{
 					'width': props.inputWidth,
 				}}
 				onChange={props.handleChange}
+				onClick={props.handleClick}
 				disabled={props.patternType === 'id' ? '' : 'disabled'}
 			/>
 			</li>
 		</ul>
+	);
+}
+
+function PatternTypeHint(props) {
+	let hint = '';
+
+	switch (props.patternType) {
+	case 'generated':
+		hint = 'Generated patterns can always be solved';
+		break;
+
+	case 'random':
+		hint = 'Random patterns may or may not have a solution';
+		break;
+
+	case 'id':
+		hint = 'Enter an ID to generate a pattern';
+		break;
+
+	default:
+		break;
+	}
+
+	return (
+		<span className="hint">{hint}</span>
 	);
 }
 
@@ -112,7 +138,16 @@ class MapSquares extends Component {
 
 		const isChallenging = map.patternRows === map.mapRows && map.patternColumns === map.mapColumns; // map and pattern same size
 		const defaultType = isChallenging ? 'generated' : 'random';
-		const patternType = typeof storedData.patternType !== 'undefined' ? storedData.patternType : defaultType;
+		let patternType = typeof storedData.patternType !== 'undefined' ? storedData.patternType : defaultType;
+
+		// only set to 'id' if there is a stored id
+		let id = '';
+		if (patternType === 'id') {
+			id = typeof storedData.id !== 'undefined' ? storedData.id : '';
+			if (id === '') {
+				patternType = defaultType;
+			}
+		}
 
 		const clicks = typeof storedData.clicks !== 'undefined' ? storedData.clicks : 0;
 		const solved = typeof storedData.solved !== 'undefined' ? storedData.solved : 0;
@@ -135,7 +170,7 @@ class MapSquares extends Component {
 			'patternColumns': map.patternColumns,
 			'isChallenging': isChallenging,
 			'patternType': patternType,
-			'id': '',
+			'id': id,
 			'clicks': clicks,
 			'solved': solved,
 			'averageClicks': averageClicks,
@@ -178,24 +213,24 @@ class MapSquares extends Component {
 
 	newPatternClicked() {
 		this.generatePattern();
+
+		// generating a new pattern counts as a click
+		this.setState({
+			'clicks': this.state.clicks + 1,
+		});
 	}
 
 	patternTypeSelectorClicked(e) {
 		let patternType = '';
-		let info = '';
 
 		if ($(e.target).hasClass('generated')) {
 			patternType = 'generated';
-			info = 'Generated patterns can always be solved';
 		} else if ($(e.target).hasClass('random')) {
 			patternType = 'random';
-			info = 'Random patterns may or may not have a solution';
 		} else if ($(e.target).hasClass('id') || $(e.target).hasClass('id-input')) {
 			patternType = 'id';
-			info = 'Enter an ID to generate a specific pattern';
 		}
 
-		toastr.info(info);
 		this.setState({'patternType': patternType});
 		storeGameStatus(this.state.localStorageKey, {
 			'patternType': patternType,
@@ -247,6 +282,10 @@ class MapSquares extends Component {
 				'checkMatch': true,
 				'acceptInput': true,
 			} );
+
+			storeGameStatus(this.state.localStorageKey, {
+				'id': data.id,
+			});
 		},
 		(err) => {
 			toastr.error(`Error performing generating pattern: ${err}`);
@@ -643,22 +682,18 @@ class MapSquares extends Component {
 
 	renderGameControls() {
 		let inputWidth = '';
-		let maxLength = 0;
 
 		switch (this.state.patternRows) {
 		case 3:
 			inputWidth = '3em';
-			maxLength = 4;
 			break;
 
 		case 4:
 			inputWidth = '5em';
-			maxLength = 6;
 			break;
 
 		case 5:
 			inputWidth = '7em';
-			maxLength = 10;
 			break;
 
 		default:
@@ -667,18 +702,23 @@ class MapSquares extends Component {
 
 		return (
 			<div className="game-controls">
-				{this.state.isChallenging &&
-				<PatternTypeSelector
+				<div className="holder">
+					{this.state.isChallenging &&
+					<PatternTypeSelector
+						patternRows={this.patternRows}
+						patternType={this.state.patternType}
+						id={this.state.id}
+						handleChange={this.idChanged.bind(this)}
+						handleClick={this.patternTypeSelectorClicked.bind(this)}
+						inputWidth={inputWidth}
+					/>
+					}
+					<NewPatternButton
+						handleClick={this.newPatternClicked.bind(this)}
+					/>
+				</div>
+				<PatternTypeHint
 					patternType={this.state.patternType}
-					id={this.state.id}
-					handleChange={this.idChanged.bind(this)}
-					handleClick={this.patternTypeSelectorClicked.bind(this)}
-					inputWidth={inputWidth}
-					maxLength={maxLength}
-				/>
-				}
-				<NewPatternButton
-					handleClick={this.newPatternClicked.bind(this)}
 				/>
 			</div>
 		);

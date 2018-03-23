@@ -34,26 +34,58 @@
 }
 
 .game-controls {
-	@include horizontal-centerer;
-	clear: both;
-	float: left;
-	margin: 8px 0 0;
 
-	input {
-		background: $input-bg;
-		color: $input-color;
+	.holder {
+		@include horizontal-centerer;
+		clear: both;
+		float: left;
+		margin: 8px 0 0;
+	}
+
+
+	.hint {
+		clear: both;
+		display: block;
+		text-align: center;
 	}
 }
 
 .pattern-type {
+	border: 1px solid $pts-border;
+	border-radius: 8px;
 	float: left;
 	list-style-type: none;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
 
 	li {
+		background: $pts-bg;
+		color: $pts-color;
 		float: left;
+		line-height: 1.5;
+		padding: 2px 8px;
 
 		&.selected {
-			border: 1px solid white;
+			background: $pts-selected-bg;
+		}
+
+		&:not(last-child) {
+			border-right: 1px solid $pts-border;
+		}
+
+	}
+
+	input {
+		background: $input-bg;
+		border: 0;
+		color: $input-color;
+		margin: 0 0 0 4px;
+		padding: 0;
+
+		&:disabled {
+			background-color: $pts-bg;
+			color: $dashboard-color;
 		}
 	}
 }

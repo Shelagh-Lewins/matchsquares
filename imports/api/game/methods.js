@@ -98,12 +98,14 @@ Meteor.methods({
 		} else if (params.patternType === 'id') {
 			// create the pattern from the id
 			// convert the id back to a base 4 string
-
-			// TODO add leading 0 if necessary to make string long enough
-
-			console.log(`id ${params.id}`);
 			const tempId = baseConvert(params.id, 36, 4).split('');
-			console.log(`tempId ${tempId}`);
+
+			// add leading 0s if necessary to make enough digits
+			const numSquares = params.patternRows * params.patternColumns;
+
+			for (let i = tempId.length; i < numSquares; i++ ) {
+				tempId.unshift(0);
+			}
 
 			for (let i = 0; i < params.patternRows; i++) {
 				let row = [];
@@ -114,7 +116,6 @@ Meteor.methods({
 						'row': i,
 						'column': j,
 					};
-					console.log(`color ${square.color}`);
 
 					if (typeof square.color === 'undefined') {
 						throw new Meteor.Error('generate-pattern-failed', 'id did not have enough digits');
@@ -128,8 +129,6 @@ Meteor.methods({
 
 			id = params.id;
 		}
-
-		// const id = Meteor.call('game.findPatternId', pattern);
 
 		return { pattern, id };
 	},
@@ -241,11 +240,14 @@ Meteor.methods({
 				id += colors.indexOf(patternCell.color);
 			});
 		});
-console.log(`id base 4 ${id}`);
+
 		// now convert to a base 36 number
 		id = baseConvert(id, 4, 36);
 
-		console.log(`id base 36 ${id}`);
+		// add leading 0s if necessary to make enough digits
+		for (let i = id.length; i < Meteor.settings.public.idLengths[pattern[0].length]; i++ ) {
+			id = '0' + id;
+		}
 
 		return id;
 	},
