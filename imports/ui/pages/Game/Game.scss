@@ -10,7 +10,6 @@
 	background-color: $dashboard-bg;
 	color: $dashboard-color;
 	margin: -10px -15px 0;
-	overflow: hidden;
 	padding: 8px 0;
 
 	@include media-breakpoint(md) {
@@ -55,7 +54,7 @@
 	border-radius: 8px;
 	float: left;
 	list-style-type: none;
-	margin: 0;
+	margin: 0 8px 0 0;
 	overflow: hidden;
 	padding: 0;
 
@@ -77,15 +76,32 @@
 	}
 }
 
-.id-input {
-	background: $input-bg;
-	border: 0;
-	color: $input-color;
-	margin: 0 0 0 4px;
-	padding: 0;
 
-	&:disabled {
-		background-color: transparent;
-		color: $dashboard-color;
+.id-input {
+	left: 50%;
+	position: absolute;
+	top: 0;
+	z-index: 100;
+
+	.holder {
+		background: $input-bg;
+		border: 1px solid $pts-bg;
+		border-radius: 8px;
+		margin-left: -50%;
+		padding: 6px 8px;
+		position: relative;
+
+	}
+
+	input {
+		background: $input-bg;
+		color: $input-color;
+		margin: 0;
+		padding: 0;
+
+		&:disabled {
+			background-color: transparent;
+			color: $dashboard-color;
+		}
 	}
 }

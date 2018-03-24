@@ -77,18 +77,21 @@ function PatternTypeSelector(props) {
 
 function PatternId(props) {
 	return (
-		<input
-			className='id-input'
-			type='text'
-			name='id'
-			value={props.id}
-			maxLength={Meteor.settings.public.idLengths[props.patternRows]}
-			style={{
-				'width': props.inputWidth,
-			}}
-			onChange={props.handleChange}
-			disabled={props.patternType === 'id' ? '' : 'disabled'}
-		/>
+		<div className="id-input">
+			<div className="holder">
+				<input
+					type='text'
+					name='id'
+					value={props.id}
+					maxLength={Meteor.settings.public.idLengths[props.patternRows]}
+					style={{
+						'width': props.inputWidth,
+					}}
+					onChange={props.handleChange}
+					disabled={props.patternType === 'id' ? '' : 'disabled'}
+				/>
+			</div>
+		</div>
 	);
 }
 
@@ -707,11 +710,16 @@ class MapSquares extends Component {
 			<div className="game-controls">
 				<div className="holder">
 					{this.state.isChallenging &&
-					<PatternTypeSelector
-						patternType={this.state.patternType}
-						handleClick={this.patternTypeSelectorClicked.bind(this)}
-					/>
+						<PatternTypeSelector
+							patternType={this.state.patternType}
+							handleClick={this.patternTypeSelectorClicked.bind(this)}
+						/>
 					}
+					<NewPatternButton
+						handleClick={this.newPatternClicked.bind(this)}
+					/>
+				</div>
+				{this.state.patternType === 'id' &&
 					<PatternId
 						patternType={this.state.patternType}
 						patternRows={this.patternRows}
@@ -719,10 +727,7 @@ class MapSquares extends Component {
 						inputWidth={inputWidth}
 						id={this.state.id}
 					/>
-					<NewPatternButton
-						handleClick={this.newPatternClicked.bind(this)}
-					/>
-				</div>
+				}
 				<PatternTypeHint
 					patternType={this.state.patternType}
 				/>
