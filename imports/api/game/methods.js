@@ -16,9 +16,6 @@ Meteor.methods({
 			'id': String,
 		});
 
-		console.log(`patternType ${params.patternType}`);
-		console.log(`id ${params.id}`);
-
 		let invalidId = false;
 		if (params.patternType === 'id') {
 			if (params.id === '' || params.id === 'NaN') {
@@ -30,22 +27,14 @@ Meteor.methods({
 			throw new Meteor.Error('generate-pattern-failed', 'no id provided');
 		}
 
-		// check length of string against pattern rows
 
-		// don't try to generate id pattern if id is empty string
-		// enter pattern ID and generate pattern from it
-
-		// static hint text instead of notifications
-
+		// TODO don't try to generate id pattern if id is empty string
 		let pattern = [];
 		let id = '';
 		const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
-		// let id = '';
 
 		if (params.patternType === 'random') {
 			// choose pattern square colours at random
-			// const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
-
 			for (let i = 0; i < params.patternRows; i++) {
 				pattern[i] = [];
 
@@ -60,7 +49,6 @@ Meteor.methods({
 			id = Meteor.call('game.findPatternId', pattern);
 		} else if (params.patternType === 'generated') {
 			// start with a solid ground the size of the map
-			// const colors = Meteor.settings.public.mapSquareShapes.map((object) => object.color);
 			const colorNumber = Math.floor(Random.fraction() * colors.length);
 
 			for (let i = 0; i < params.patternRows; i++) {

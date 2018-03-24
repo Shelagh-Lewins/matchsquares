@@ -70,22 +70,25 @@ function PatternTypeSelector(props) {
 		<ul className='pattern-type'>
 			<li className={`generated ${isGenerated}`} onClick={props.handleClick}>Generated</li>
 			<li className={`random ${isRandom}`} onClick={props.handleClick}>Random</li>
-			<li className={`id ${isId}`} onClick={props.handleClick}>ID:
-			<input
-				className='id-input'
-				type='text'
-				name='id'
-				value={props.id}
-				maxLength={Meteor.settings.public.idLengths[props.patternRows]}
-				style={{
-					'width': props.inputWidth,
-				}}
-				onChange={props.handleChange}
-				onClick={props.handleClick}
-				disabled={props.patternType === 'id' ? '' : 'disabled'}
-			/>
-			</li>
+			<li className={`id ${isId}`} onClick={props.handleClick}>ID</li>
 		</ul>
+	);
+}
+
+function PatternId(props) {
+	return (
+		<input
+			className='id-input'
+			type='text'
+			name='id'
+			value={props.id}
+			maxLength={Meteor.settings.public.idLengths[props.patternRows]}
+			style={{
+				'width': props.inputWidth,
+			}}
+			onChange={props.handleChange}
+			disabled={props.patternType === 'id' ? '' : 'disabled'}
+		/>
 	);
 }
 
@@ -705,14 +708,17 @@ class MapSquares extends Component {
 				<div className="holder">
 					{this.state.isChallenging &&
 					<PatternTypeSelector
-						patternRows={this.patternRows}
 						patternType={this.state.patternType}
-						id={this.state.id}
-						handleChange={this.idChanged.bind(this)}
 						handleClick={this.patternTypeSelectorClicked.bind(this)}
-						inputWidth={inputWidth}
 					/>
 					}
+					<PatternId
+						patternType={this.state.patternType}
+						patternRows={this.patternRows}
+						handleChange={this.idChanged.bind(this)}
+						inputWidth={inputWidth}
+						id={this.state.id}
+					/>
 					<NewPatternButton
 						handleClick={this.newPatternClicked.bind(this)}
 					/>

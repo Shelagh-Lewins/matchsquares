@@ -61,31 +61,31 @@
 
 	li {
 		background: $pts-bg;
-		color: $pts-color;
+		color: $pts-border;
 		float: left;
 		line-height: 1.5;
-		padding: 2px 8px;
+		padding: 6px 8px;
 
 		&.selected {
 			background: $pts-selected-bg;
+			color: $input-color;
 		}
 
-		&:not(last-child) {
+		&:not(:last-child) {
 			border-right: 1px solid $pts-border;
 		}
-
 	}
+}
 
-	input {
-		background: $input-bg;
-		border: 0;
-		color: $input-color;
-		margin: 0 0 0 4px;
-		padding: 0;
+.id-input {
+	background: $input-bg;
+	border: 0;
+	color: $input-color;
+	margin: 0 0 0 4px;
+	padding: 0;
 
-		&:disabled {
-			background-color: $pts-bg;
-			color: $dashboard-color;
-		}
+	&:disabled {
+		background-color: transparent;
+		color: $dashboard-color;
 	}
 }
