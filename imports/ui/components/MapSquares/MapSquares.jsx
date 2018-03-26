@@ -76,21 +76,20 @@ function PatternTypeSelector(props) {
 }
 
 function PatternId(props) {
+	const disabled = props.patternType === 'id' ? '' : 'disabled';
 	return (
-		<div className="id-input">
-			<div className="holder">
-				<input
-					type='text'
-					name='id'
-					value={props.id}
-					maxLength={Meteor.settings.public.idLengths[props.patternRows]}
-					style={{
-						'width': props.inputWidth,
-					}}
-					onChange={props.handleChange}
-					disabled={props.patternType === 'id' ? '' : 'disabled'}
-				/>
-			</div>
+		<div className={`id-input ${disabled}`}>
+			<input
+				type='text'
+				name='id'
+				value={props.id}
+				maxLength={Meteor.settings.public.idLengths[props.patternRows]}
+				style={{
+					'width': props.inputWidth,
+				}}
+				onChange={props.handleChange}
+				disabled={disabled}
+			/>
 		</div>
 	);
 }
@@ -122,7 +121,7 @@ function PatternTypeHint(props) {
 
 function NewPatternButton(props) {
 	return (
-		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >New pattern</Button>
+		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >Give me a new pattern</Button>
 	);
 }
 
@@ -691,15 +690,15 @@ class MapSquares extends Component {
 
 		switch (this.state.patternRows) {
 		case 3:
-			inputWidth = '3em';
+			inputWidth = '4em';
 			break;
 
 		case 4:
-			inputWidth = '5em';
+			inputWidth = '6em';
 			break;
 
 		case 5:
-			inputWidth = '7em';
+			inputWidth = '8em';
 			break;
 
 		default:
@@ -708,29 +707,32 @@ class MapSquares extends Component {
 
 		return (
 			<div className="game-controls">
-				<div className="holder">
-					{this.state.isChallenging &&
-						<PatternTypeSelector
+				{this.state.isChallenging &&
+					<div>
+						<PatternTypeHint
 							patternType={this.state.patternType}
-							handleClick={this.patternTypeSelectorClicked.bind(this)}
 						/>
-					}
+						<div className="holder">
+							<PatternTypeSelector
+								patternType={this.state.patternType}
+								handleClick={this.patternTypeSelectorClicked.bind(this)}
+							/>
+							<PatternId
+								patternType={this.state.patternType}
+								patternRows={this.patternRows}
+								handleChange={this.idChanged.bind(this)}
+								inputWidth={inputWidth}
+								id={this.state.id}
+							/>
+						</div>
+					</div>
+				}
+
+				<div className="holder">
 					<NewPatternButton
 						handleClick={this.newPatternClicked.bind(this)}
 					/>
 				</div>
-				{this.state.patternType === 'id' &&
-					<PatternId
-						patternType={this.state.patternType}
-						patternRows={this.patternRows}
-						handleChange={this.idChanged.bind(this)}
-						inputWidth={inputWidth}
-						id={this.state.id}
-					/>
-				}
-				<PatternTypeHint
-					patternType={this.state.patternType}
-				/>
 			</div>
 		);
 	}
