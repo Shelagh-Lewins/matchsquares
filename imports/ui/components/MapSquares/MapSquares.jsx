@@ -218,6 +218,10 @@ class MapSquares extends Component {
 	}
 
 	newPatternClicked() {
+		event.preventDefault();
+
+		if (!this.state.acceptInput) return;
+
 		this.generatePattern();
 
 		const clicks = this.state.clicks + 1;
@@ -232,14 +236,18 @@ class MapSquares extends Component {
 		});
 	}
 
-	patternTypeSelectorClicked(e) {
+	patternTypeSelectorClicked(event) {
+		event.preventDefault();
+
+		if (!this.state.acceptInput) return;
+
 		let patternType = '';
 
-		if ($(e.target).hasClass('generated')) {
+		if ($(event.target).hasClass('generated')) {
 			patternType = 'generated';
-		} else if ($(e.target).hasClass('random')) {
+		} else if ($(event.target).hasClass('random')) {
 			patternType = 'random';
-		} else if ($(e.target).hasClass('id') || $(e.target).hasClass('id-input')) {
+		} else if ($(event.target).hasClass('id') || $(event.target).hasClass('id-input')) {
 			patternType = 'id';
 		}
 
@@ -249,13 +257,21 @@ class MapSquares extends Component {
 		});
 	}
 
-	idChanged(e) {
+	idChanged(event) {
+		event.preventDefault();
+
+		if (!this.state.acceptInput) return;
+
 		this.setState({
-			'id': e.target.value,
+			'id': event.target.value,
 		});
 	}
 
 	resetMapButtonClicked() {
+		event.preventDefault();
+
+		if (!this.state.acceptInput) return;
+
 		const clicks = this.state.clicks + 1;
 
 		storeGameStatus(this.state.localStorageKey, {
@@ -287,6 +303,7 @@ class MapSquares extends Component {
 				'generatingPattern': false,
 				'id': data.id,
 				'match': {},
+				'originalMapSquares': JSON.parse(JSON.stringify(this.state.mapSquares)),
 				'pattern': data.pattern,
 			} );
 
@@ -330,7 +347,6 @@ class MapSquares extends Component {
 		this.setState({
 			'clicks': clicks,
 			'mapSquares': data,
-			'originalMapSquares': JSON.parse(JSON.stringify(data)),
 		});
 	}
 
