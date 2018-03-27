@@ -103,11 +103,11 @@ function PatternTypeHint(props) {
 		break;
 
 	case 'random':
-		hint = 'Random patterns may or may not have a solution';
+		hint = 'Random patterns may not have a solution';
 		break;
 
 	case 'id':
-		hint = 'Enter an ID to generate a pattern';
+		hint = 'Generate a pattern from an alphanumeric ID';
 		break;
 
 	default:
@@ -666,7 +666,7 @@ class MapSquares extends Component {
 
 	renderGameStatus(params) {
 		return (
-			<div className='game-status'>
+			<div className='holder'>
 				<span className='clicks'>
 					Solved: {params.solved}
 				</span>
@@ -707,11 +707,13 @@ class MapSquares extends Component {
 
 		return (
 			<div className="game-controls">
+				<div className="holder">
+					<NewPatternButton
+						handleClick={this.newPatternClicked.bind(this)}
+					/>
+				</div>
 				{this.state.isChallenging &&
 					<div>
-						<PatternTypeHint
-							patternType={this.state.patternType}
-						/>
 						<div className="holder">
 							<PatternTypeSelector
 								patternType={this.state.patternType}
@@ -725,14 +727,13 @@ class MapSquares extends Component {
 								id={this.state.id}
 							/>
 						</div>
+						<div className="holder">
+							<PatternTypeHint
+								patternType={this.state.patternType}
+							/>
+						</div>
 					</div>
 				}
-
-				<div className="holder">
-					<NewPatternButton
-						handleClick={this.newPatternClicked.bind(this)}
-					/>
-				</div>
 			</div>
 		);
 	}
@@ -818,9 +819,8 @@ class MapSquares extends Component {
 
 		return (
 			<div className="game-holder">
-				<div className="dashboard">
+				<div className="game-status">
 					{gameStatus}
-					{gameControls}
 				</div>
 
 				<div className='pattern-holder'>
@@ -832,6 +832,7 @@ class MapSquares extends Component {
 					</div>
 				</div>
 				{mapSquares}
+				{gameControls}
 			</div>
 		);
 	}
