@@ -76,7 +76,6 @@ function PatternTypeSelector(props) {
 }
 
 function PatternId(props) {
-	console.log(`props ${JSON.stringify(props)}`);
 	const disabled = props.patternType === 'id' ? '' : 'disabled';
 	return (
 		<div className={`id-input ${disabled}`}>
@@ -126,9 +125,9 @@ function NewPatternButton(props) {
 	);
 }
 
-function DeleteGameStatusButton(props) {
+function ResetMapButton(props) {
 	return (
-		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >Reset</Button>
+		<Button type="button" className="btn btn-secondary" onClick={props.handleClick} >Reset board</Button>
 	);
 }
 
@@ -161,27 +160,28 @@ class MapSquares extends Component {
 		const clickHistory = typeof storedData.clickHistory !== 'undefined' ? storedData.clickHistory : [];
 
 		this.state = {
-			'mapSquares': [[]],
-			'pattern': [[]],
-			'generatingPattern': false,
-			'checkMatch': false,
-			'match': {},
 			'acceptInput': false,
-			'slidingSquares': [],
+			'averageClicks': averageClicks,
+			'checkMatch': false,
+			'clickHistory': clickHistory,
+			'clicks': clicks,
+			'generatingPattern': false,
+			'id': id,
+			'isChallenging': isChallenging,
+			'localStorageKey': this.props.url,
+			'mapColumns': map.mapColumns,
+			'mapRows': map.mapRows,
+			'mapSquares': [[]],
+			'match': {},
+			'originalMapSquares': [[]],
+			'pattern': [[]],
+			'patternColumns': map.patternColumns,
+			'patternRows': map.patternRows,
+			'patternType': patternType,
 			'slideDistance': 0,
 			'slideTransition': '',
-			'mapRows': map.mapRows,
-			'mapColumns': map.mapColumns,
-			'patternRows': map.patternRows,
-			'patternColumns': map.patternColumns,
-			'isChallenging': isChallenging,
-			'patternType': patternType,
-			'id': id,
-			'clicks': clicks,
+			'slidingSquares': [],
 			'solved': solved,
-			'averageClicks': averageClicks,
-			'clickHistory': clickHistory,
-			'localStorageKey': this.props.url,
 		};
 
 		this.props.settings = {};
@@ -220,9 +220,15 @@ class MapSquares extends Component {
 	newPatternClicked() {
 		this.generatePattern();
 
+		const clicks = this.state.clicks + 1;
+
 		// generating a new pattern counts as a click
+		storeGameStatus(this.state.localStorageKey, {
+			'clicks': clicks,
+		});
+
 		this.setState({
-			'clicks': this.state.clicks + 1,
+			'clicks': clicks,
 		});
 	}
 
@@ -249,21 +255,16 @@ class MapSquares extends Component {
 		});
 	}
 
-	deleteGameStatusButtonClicked() {
-		const clicks = 0;
-		const solved = 0;
-		const clickHistory = [];
+	resetMapButtonClicked() {
+		const clicks = this.state.clicks + 1;
 
 		storeGameStatus(this.state.localStorageKey, {
 			'clicks': clicks,
-			'solved': solved,
-			'clickHistory': clickHistory,
 		});
 
 		this.setState({
-			'clicks': clicks,
-			'solved': solved,
-			'clickHistory': clickHistory,
+			'clicks': this.state.clicks + 1,
+			'mapSquares': JSON.parse(JSON.stringify(this.state.originalMapSquares)),
 		});
 	}
 
@@ -273,20 +274,20 @@ class MapSquares extends Component {
 		});
 
 		promisedCall('game.generatePattern', {
-			'mapRows': this.state.mapRows,
-			'mapColumns': this.state.mapColumns,
-			'patternRows': this.state.patternRows,
-			'patternColumns': this.state.patternColumns,
-			'patternType': this.state.patternType,
 			'id': this.state.id,
+			'mapColumns': this.state.mapColumns,
+			'mapRows': this.state.mapRows,
+			'patternColumns': this.state.patternColumns,
+			'patternRows': this.state.patternRows,
+			'patternType': this.state.patternType,
 		}).then((data) => {
 			this.setState( {
+				'acceptInput': true,
+				'checkMatch': true,
 				'generatingPattern': false,
-				'pattern': data.pattern,
 				'id': data.id,
 				'match': {},
-				'checkMatch': true,
-				'acceptInput': true,
+				'pattern': data.pattern,
 			} );
 
 			storeGameStatus(this.state.localStorageKey, {
@@ -296,10 +297,10 @@ class MapSquares extends Component {
 		(err) => {
 			toastr.error(`Error performing generating pattern: ${err}`);
 			this.setState( {
+				'acceptInput': true,
+				'checkMatch': true,
 				'generatingPattern': false,
 				'match': {},
-				'checkMatch': true,
-				'acceptInput': true,
 			} );
 		}
 		);
@@ -327,8 +328,9 @@ class MapSquares extends Component {
 		});
 
 		this.setState({
-			'mapSquares': data,
 			'clicks': clicks,
+			'mapSquares': data,
+			'originalMapSquares': JSON.parse(JSON.stringify(data)),
 		});
 	}
 
@@ -387,20 +389,20 @@ class MapSquares extends Component {
 			const averageClicks = this.calculateAverage(this.state.clickHistory);
 
 			storeGameStatus(this.state.localStorageKey, {
-				'clicks': clicks,
-				'solved': solved,
 				'averageClicks': averageClicks,
 				'clickHistory': clickHistory,
+				'clicks': clicks,
+				'solved': solved,
 			});
 
 			this.setState( {
-				'checkMatch': false,
-				'match': match,
 				'acceptInput': false,
-				'clicks': clicks,
-				'solved': solved,
 				'averageClicks': averageClicks,
+				'checkMatch': false,
 				'clickHistory': clickHistory,
+				'clicks': clicks,
+				'match': match,
+				'solved': solved,
 			});
 
 			setTimeout(() => {
@@ -677,11 +679,6 @@ class MapSquares extends Component {
 				<span className='clicks'>
 					Average: {params.averageClicks}
 				</span>
-				<span className="delete-game-status">
-					<DeleteGameStatusButton
-						handleClick={this.deleteGameStatusButtonClicked.bind(this)}
-					/>
-				</span>
 			</div>
 		);
 	}
@@ -712,6 +709,11 @@ class MapSquares extends Component {
 					<NewPatternButton
 						handleClick={this.newPatternClicked.bind(this)}
 					/>
+					<span className="reset-pattern">
+						<ResetMapButton
+							handleClick={this.resetMapButtonClicked.bind(this)}
+						/>
+					</span>
 				</div>
 				{this.state.isChallenging &&
 					<div>
