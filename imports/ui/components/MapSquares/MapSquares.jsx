@@ -76,6 +76,7 @@ function PatternTypeSelector(props) {
 }
 
 function PatternId(props) {
+	console.log(`props ${JSON.stringify(props)}`);
 	const disabled = props.patternType === 'id' ? '' : 'disabled';
 	return (
 		<div className={`id-input ${disabled}`}>
@@ -721,7 +722,7 @@ class MapSquares extends Component {
 							/>
 							<PatternId
 								patternType={this.state.patternType}
-								patternRows={this.patternRows}
+								patternRows={this.state.patternRows}
 								handleChange={this.idChanged.bind(this)}
 								inputWidth={inputWidth}
 								id={this.state.id}
