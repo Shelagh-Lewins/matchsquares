@@ -34,20 +34,15 @@
 }
 
 .game-controls {
-	@include media-breakpoint(md) {
-		@include horizontal-centerer;
-		border-radius: 8px;
-		float: left;
-		margin: 0 0 10px;
-		padding: 8px 16px;
-		width: 100%;
-	}
+	@include horizontal-centerer;
 
 	background-color: $dashboard-bg;
+	border-radius: 8px;
 	color: $dashboard-color;
-	margin: 0 -15px;
+	float: left;
+	margin: 0 0 10px;
 	overflow: hidden;
-	padding: 8px 0;
+	padding: 8px 16px;
 
 	.holder {
 		@include horizontal-centerer;

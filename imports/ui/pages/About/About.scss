@@ -5,3 +5,13 @@
 		background-position: center center !important;
 	}
 }
+
+dl {
+	&.rules {
+		list-style-type: disc;
+
+		dt {
+			margin-top: 10px;
+		}
+	}
+}
