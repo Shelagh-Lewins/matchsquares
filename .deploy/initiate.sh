@@ -1,9 +1,13 @@
 #!/bin/bash
 set -e
 
+# use to reference other scripts in the same directory as this one
+my_dir=`dirname $0`
+
+# load environment variables: SERVER
+. $my_dir/.env
+
 ### Configuration ###
-# deploy to server "armadillo"
-SERVER=matchsquares@178.62.85.245
 APP_DIR=/var/www/matchsquares
 KEYFILE=
 REMOTE_SCRIPT_PATH=/tmp/deploy-matchsquares.sh

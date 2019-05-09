@@ -22,7 +22,7 @@ class Home extends Component {
 				<div className="box">
 					<Row>
 						<Col xs={12}>
-							<h1>MatchSquares says hi</h1>
+							<h1>MatchSquares</h1>
 						</Col>
 					</Row>
 					<Row>
