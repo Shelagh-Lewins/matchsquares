@@ -183,8 +183,6 @@ class MapSquares extends Component {
 			'slidingSquares': [],
 			'solved': solved,
 		};
-
-		this.props.settings = {};
 	}
 
 	componentWillMount() {

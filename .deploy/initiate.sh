@@ -21,7 +21,6 @@ function run()
   "$@"
 }
 
-
 ### Automation steps ###
 
 if [[ "$KEYFILE" != "" ]]; then
@@ -30,12 +29,9 @@ else
   KEYARG=
 fi
 
-if [[ `meteor --version` =~ "Meteor 1.4."* ]] || [[ `meteor --version` =~ "Meteor 1.5."* ]] || [[ `meteor --version` =~ "Meteor 1.6."* ]]; then
-  run meteor build --server-only ../output
-  mv ../output/*.tar.gz ./package.tar.gz
-else
-  run meteor bundle package.tar.gz
-fi
+run meteor build --server-only ../output
+mv ../output/*.tar.gz ./package.tar.gz
+
 run scp $KEYARG package.tar.gz $SERVER:$APP_DIR/
 run scp $KEYARG .deploy/work.sh $SERVER:$REMOTE_SCRIPT_PATH
 echo
