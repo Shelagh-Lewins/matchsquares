@@ -7,13 +7,21 @@ import './About.scss';
 
 class About extends Component {
 	componentDidMount() {
-		$('body').addClass('about');
-		$('main').css('background', 'url(/backgrounds/cat.jpg) transparent no-repeat 0 0');
-		$('main').css('background-size', 'cover');
+		document.body.classList.add('about');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = 'url(/backgrounds/cat.jpg) transparent no-repeat 0 0';
+			main.style.backgroundSize = 'cover';
+		}
 	}
 
 	componentWillUnmount() {
-		$('body').removeClass('about');
+		document.body.classList.remove('about');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = '';
+			main.style.backgroundSize = '';
+		}
 	}
 
 	render() {

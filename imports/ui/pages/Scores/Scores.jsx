@@ -9,13 +9,21 @@ import './Scores.scss';
 
 class About extends Component {
 	componentDidMount() {
-		$('body').addClass('scores');
-		$('main').css('background', 'url(/backgrounds/fort.jpg) transparent no-repeat center');
-		$('main').css('background-size', 'cover');
+		document.body.classList.add('scores');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = 'url(/backgrounds/fort.jpg) transparent no-repeat center';
+			main.style.backgroundSize = 'cover';
+		}
 	}
 
 	componentWillUnmount() {
-		$('body').removeClass('scores');
+		document.body.classList.remove('scores');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = '';
+			main.style.backgroundSize = '';
+		}
 	}
 
 	renderScores() {

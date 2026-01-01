@@ -194,7 +194,7 @@ class MapSquares extends Component {
 	}
 
 	componentDidMount() {
-		$('body').addClass('game');
+		document.body.classList.add('game');
 
 		// choose a random background image
 		const numberOfImages = 40;
@@ -207,12 +207,20 @@ class MapSquares extends Component {
 
 		url = url + imageNo.toString() + '.jpg';
 
-		$('main').css('background', 'url(' + url + ') transparent no-repeat center');
-		$('main').css('background-size', 'cover');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = 'url(' + url + ') transparent no-repeat center';
+			main.style.backgroundSize = 'cover';
+		}
 	}
 
 	componentWillUnmount() {
-		$('body').removeClass('game');
+		document.body.classList.remove('game');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = '';
+			main.style.backgroundSize = '';
+		}
 	}
 
 	newPatternClicked() {
@@ -241,11 +249,11 @@ class MapSquares extends Component {
 
 		let patternType = '';
 
-		if ($(event.target).hasClass('generated')) {
+		if (event.target.classList.contains('generated')) {
 			patternType = 'generated';
-		} else if ($(event.target).hasClass('random')) {
+		} else if (event.target.classList.contains('random')) {
 			patternType = 'random';
-		} else if ($(event.target).hasClass('id') || $(event.target).hasClass('id-input')) {
+		} else if (event.target.classList.contains('id') || event.target.classList.contains('id-input')) {
 			patternType = 'id';
 		}
 

@@ -7,13 +7,21 @@ import DonateButton from '../../components/DonateButton/DonateButton.jsx';
 
 class Home extends Component {
 	componentDidMount() {
-		$('body').addClass('home');
-		$('main').css('background', 'url(/backgrounds/sheep.jpg) transparent no-repeat center right');
-		$('main').css('background-size', 'cover');
+		document.body.classList.add('home');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = 'url(/backgrounds/sheep.jpg) transparent no-repeat center right';
+			main.style.backgroundSize = 'cover';
+		}
 	}
 
 	componentWillUnmount() {
-		$('body').removeClass('home');
+		document.body.classList.remove('home');
+		const main = document.querySelector('main');
+		if (main) {
+			main.style.background = '';
+			main.style.backgroundSize = '';
+		}
 	}
 
 	render() {

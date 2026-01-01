@@ -23,9 +23,9 @@ Clicking mapsquares cycles them through a series of polygons.
 */
 
 import React, { Component } from 'react';
-import { withRouter, Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import './App.scss';
-import { Grid } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 import Navigation from '../components/Navigation/Navigation.jsx';
 
@@ -43,19 +43,19 @@ class App extends Component {
 				</header>
 
 				<main>
-					<Grid>
-						<Switch>
-							<Route exact path='/' component={Home}/>
-							<Route path='/game/:url' component={Game}/>
-							<Route path='/scores' component={Scores}/>
-							<Route path='/about' component={About}/>
-						</Switch>
-					</Grid>
+					<Container>
+						<Routes>
+							<Route path='/' element={<Home />}/>
+							<Route path='/game/:url' element={<Game />}/>
+							<Route path='/scores' element={<Scores />}/>
+							<Route path='/about' element={<About />}/>
+						</Routes>
+					</Container>
 				</main>
 			</div>
 		);
 	}
 }
 
-export default withRouter(App);
+export default App;
 
